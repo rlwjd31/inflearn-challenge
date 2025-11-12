@@ -1,5 +1,9 @@
 import { defineConfig, env } from 'prisma/config';
 
+import { config as loadDotEnv } from 'dotenv';
+
+loadDotEnv();
+
 export default defineConfig({
   schema: 'prisma/schema.prisma',
   migrations: {
@@ -7,7 +11,6 @@ export default defineConfig({
   },
   engine: 'classic',
   datasource: {
-    // @FIXME: cannot load DATEBASE_URL from .env file
     url: env('DATABASE_URL'),
   },
 });
