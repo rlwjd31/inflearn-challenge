@@ -1,0 +1,44 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+# compiled output
+node_modules
+dist
+build
+
+# testing
+coverage
+
+# next.js
+.next/
+out/
+
+# misc
+.DS_Store
+*.pem
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Logs
+logs
+*.log
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+
+# Diagnostic reports (https://nodejs.org/api/report.html)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Ignore prisma generated
+generated
+
