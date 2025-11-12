@@ -7,6 +7,7 @@ export default defineConfig({
   },
   engine: 'classic',
   datasource: {
+    // @FIXME: cannot load DATEBASE_URL from .env file
     url: env('DATABASE_URL'),
   },
 });
