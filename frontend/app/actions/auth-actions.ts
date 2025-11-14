@@ -1,6 +1,9 @@
 "use server";
 
-import { signIn as signInWithAuthJS } from "@/auth";
+import {
+  signIn as signInWithAuthJS,
+  signOut as signOutWithAuthJS,
+} from "@/auth";
 import { prisma } from "@/prisma";
 import { getHashedPassword } from "@/shared/lib/auth-util";
 
@@ -55,4 +58,8 @@ export const signUp = async ({
 
     return { status: 500, message: "회원가입에 실패했습니다" };
   }
+};
+
+export const signOut = async () => {
+  await signOutWithAuthJS();
 };
