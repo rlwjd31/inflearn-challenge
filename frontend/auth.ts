@@ -3,10 +3,8 @@ import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/prisma";
 import { comparePassword } from "@/shared/lib/auth-util";
-import * as jwt from "jsonwebtoken";
-import { JWT, JWTDecodeParams, JWTEncodeParams } from "next-auth/jwt";
+import { JWTDecodeParams, JWTEncodeParams } from "next-auth/jwt";
 import { jwtVerify, SignJWT } from "jose";
-import { parseAppSegmentConfig } from "next/dist/build/segment-config/app/app-segment-config";
 
 const JWT_ALGORITHM = "HS256" as const;
 
@@ -72,16 +70,41 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     strategy: "jwt",
   },
   jwt: {
-    encode: async ({ token, secret }: JWTEncodeParams) => {
-      return jwt.sign(token as jwt.JwtPayload, secret as string, {
-        algorithm: "HS256",
-      });
+    encode: async ({ token, secret }: JWTEncodeParams): Promise<string> => {
+      const secretKey = new TextEncoder().encode(
+        Array.isArray(secret) ? secret[0] : secret
+      );
+
+      const joseResult = await new SignJWT(token)
+        .setProtectedHeader({ alg: JWT_ALGORITHM, typ: "JWT" })
+        .setIssuedAt()
+        .setExpirationTime("30d")
+        .setJti(crypto.randomUUID()) // nodejs의 crypto module이 아닌 web crypto api라 edge function과 호환된다.
+        .sign(secretKey);
+
+      return joseResult;
     },
-    // @FIXME: cannot find module crypto in edge runtime
     decode: async ({ token, secret }: JWTDecodeParams) => {
-      return jwt.verify(token as string, secret as string, {
-        algorithms: ["HS256"],
-      }) as JWT;
+      if (!token) {
+        throw new Error("❌no token -> token: undefined");
+      }
+
+      const secretKey = new TextEncoder().encode(
+        Array.isArray(secret) ? secret[0] : secret
+      );
+
+      try {
+        const { payload } = await jwtVerify(token as string, secretKey, {
+          algorithms: [JWT_ALGORITHM],
+        });
+
+        return payload;
+      } catch (error) {
+        const errorMessage = "❌ JWT decode error:".concat(
+          error instanceof Error ? error.message : ""
+        );
+        throw new Error(errorMessage);
+      }
     },
   },
 });
