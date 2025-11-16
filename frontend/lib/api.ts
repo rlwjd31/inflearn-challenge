@@ -1,6 +1,7 @@
 "use server";
 
-import { cache } from "react";
+import { cookies } from "next/headers";
+import { getCookie } from "cookies-next/server";
 
 const AUTH_COOKIE_NAME =
   process.env.NODE_ENV === "production"
@@ -17,10 +18,10 @@ async function fetchApi<T>(
   options: RequestInit = {},
   token?: string
 ) {
-  const headers: Record<string, string> = {
+  const headers = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
-  };
+  } as Record<string, string>;
 
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
@@ -70,4 +71,13 @@ async function fetchApi<T>(
   } else {
     return response.text() as Promise<T>;
   }
+}
+
+export async function getUserTest(token?: string) {
+  // 서버 컴포넌트에서 호출된 경우
+  if (!token && typeof window === "undefined") {
+    token = await getCookie(AUTH_COOKIE_NAME, { cookies });
+  }
+
+  return fetchApi<string>("/user-test", {}, token);
 }
