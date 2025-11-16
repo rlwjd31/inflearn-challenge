@@ -11,6 +11,7 @@ const JWT_ALGORITHM = "HS256" as const;
 // NextAuth field info => https://authjs.dev/reference/core#authconfig
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
+  // ? development에서는 http통신을 하고 deploy에서는 secure를 사용
   useSecureCookies: process.env.NODE_ENV === "production",
   trustHost: true,
   secret: process.env.AUTH_SECRET,
