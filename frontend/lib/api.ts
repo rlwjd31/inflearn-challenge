@@ -76,6 +76,7 @@ async function fetchApi<T>(
 export async function getUserTest(token?: string) {
   // 서버 컴포넌트에서 호출된 경우
   if (!token && typeof window === "undefined") {
+    // server component에서 cookie를 가져옴 -> cookies-next/server
     token = await getCookie(AUTH_COOKIE_NAME, { cookies });
   }
 
