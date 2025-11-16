@@ -77,6 +77,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         algorithm: "HS256",
       });
     },
+    // @FIXME: cannot find module crypto in edge runtime
     decode: async ({ token, secret }: JWTDecodeParams) => {
       return jwt.verify(token as string, secret as string, {
         algorithms: ["HS256"],
