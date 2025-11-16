@@ -3,6 +3,12 @@ import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/prisma";
 import { comparePassword } from "@/shared/lib/auth-util";
+import * as jwt from "jsonwebtoken";
+import { JWT, JWTDecodeParams, JWTEncodeParams } from "next-auth/jwt";
+import { jwtVerify, SignJWT } from "jose";
+import { parseAppSegmentConfig } from "next/dist/build/segment-config/app/app-segment-config";
+
+const JWT_ALGORITHM = "HS256" as const;
 
 // NextAuth field info => https://authjs.dev/reference/core#authconfig
 export const { handlers, auth, signIn, signOut } = NextAuth({
@@ -39,18 +45,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         });
 
         if (!user) {
-          throw new Error("사용자 정보를 찾을 수 없습니다.")
+          throw new Error("사용자 정보를 찾을 수 없습니다.");
         }
-        
+
         if (!user?.hashedPassword) {
-          throw new Error("비밀번호가 존재하지 않는 사용자입니다. Social Login을 시도해보세요.")
+          throw new Error(
+            "비밀번호가 존재하지 않는 사용자입니다. Social Login을 시도해보세요."
+          );
         }
 
         // 비밀번호 일치여부 확인
-        const doPasswordMatch = comparePassword(password as string, user.hashedPassword)
+        const doPasswordMatch = comparePassword(
+          password as string,
+          user.hashedPassword
+        );
 
         if (!doPasswordMatch) {
-          throw new Error("비밀번호가 일치하지 않습니다.")
+          throw new Error("비밀번호가 일치하지 않습니다.");
         }
 
         return user;
@@ -58,6 +69,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   session: {
-    strategy: 'jwt'
-  }
+    strategy: "jwt",
+  },
+  jwt: {
+    encode: async ({ token, secret }: JWTEncodeParams) => {
+      return jwt.sign(token as jwt.JwtPayload, secret as string, {
+        algorithm: "HS256",
+      });
+    },
+    decode: async ({ token, secret }: JWTDecodeParams) => {
+      return jwt.verify(token as string, secret as string, {
+        algorithms: ["HS256"],
+      }) as JWT;
+    },
+  },
 });
