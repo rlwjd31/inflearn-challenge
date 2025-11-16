@@ -3,10 +3,15 @@ import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/prisma";
 import { comparePassword } from "@/shared/lib/auth-util";
+import { JWTDecodeParams, JWTEncodeParams } from "next-auth/jwt";
+import { jwtVerify, SignJWT } from "jose";
+
+const JWT_ALGORITHM = "HS256" as const;
 
 // NextAuth field info => https://authjs.dev/reference/core#authconfig
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
+  // ? development에서는 http통신을 하고 deploy에서는 secure를 사용
   useSecureCookies: process.env.NODE_ENV === "production",
   trustHost: true,
   secret: process.env.AUTH_SECRET,
@@ -39,18 +44,23 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         });
 
         if (!user) {
-          throw new Error("사용자 정보를 찾을 수 없습니다.")
+          throw new Error("사용자 정보를 찾을 수 없습니다.");
         }
-        
+
         if (!user?.hashedPassword) {
-          throw new Error("비밀번호가 존재하지 않는 사용자입니다. Social Login을 시도해보세요.")
+          throw new Error(
+            "비밀번호가 존재하지 않는 사용자입니다. Social Login을 시도해보세요."
+          );
         }
 
         // 비밀번호 일치여부 확인
-        const doPasswordMatch = comparePassword(password as string, user.hashedPassword)
+        const doPasswordMatch = comparePassword(
+          password as string,
+          user.hashedPassword
+        );
 
         if (!doPasswordMatch) {
-          throw new Error("비밀번호가 일치하지 않습니다.")
+          throw new Error("비밀번호가 일치하지 않습니다.");
         }
 
         return user;
@@ -58,6 +68,44 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   session: {
-    strategy: 'jwt'
-  }
+    strategy: "jwt",
+  },
+  jwt: {
+    encode: async ({ token, secret }: JWTEncodeParams): Promise<string> => {
+      const secretKey = new TextEncoder().encode(
+        Array.isArray(secret) ? secret[0] : secret
+      );
+
+      const joseResult = await new SignJWT(token)
+        .setProtectedHeader({ alg: JWT_ALGORITHM, typ: "JWT" })
+        .setIssuedAt()
+        .setExpirationTime("30d")
+        .setJti(crypto.randomUUID()) // nodejs의 crypto module이 아닌 web crypto api라 edge function과 호환된다.
+        .sign(secretKey);
+
+      return joseResult;
+    },
+    decode: async ({ token, secret }: JWTDecodeParams) => {
+      if (!token) {
+        throw new Error("❌no token -> token: undefined");
+      }
+
+      const secretKey = new TextEncoder().encode(
+        Array.isArray(secret) ? secret[0] : secret
+      );
+
+      try {
+        const { payload } = await jwtVerify(token as string, secretKey, {
+          algorithms: [JWT_ALGORITHM],
+        });
+
+        return payload;
+      } catch (error) {
+        const errorMessage = "❌ JWT decode error:".concat(
+          error instanceof Error ? error.message : ""
+        );
+        throw new Error(errorMessage);
+      }
+    },
+  },
 });
