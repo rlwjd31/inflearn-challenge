@@ -159,14 +159,14 @@ model CourseCategory {
 }
 
 model CourseEnrollment {
-  id String @id @default(cuid())
+  id         String @id @default(cuid())
   enrolledAt DateTime @default(now()) @map("enrolled_at")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
   // FK
-  userId String @map("user_id")
-  courseId String @map("course_id")
+  userId     String @map("user_id")
+  courseId   String @map("course_id")
 
   // relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -177,16 +177,16 @@ model CourseEnrollment {
 }
 
 model CourseReview {
-  id String @id @default(uuid())
-  content String
-  rating Int
+  id              String @id @default(uuid())
+  content         String
+  rating          Int
   instructorReply String? @map("instructor_reply")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
 
   // FK
-  userId String @map("user_id")
-  courseId String @map("course_id")
+  userId          String @map("user_id")
+  courseId        String @map("course_id")
 
   // relations
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -197,15 +197,16 @@ model CourseReview {
 }
 
 model CourseQuestion {
-  id String @id @default(uuid())
-  title String
-  content String
+  id        String @id @default(uuid())
+  title     String
+  status    String @default("PENDING")
+  content   String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   // FK
-  userId String @map("user_id")
-  courseId String @map("course_id")
+  userId    String @map("user_id")
+  courseId  String @map("course_id")
 
   // relations
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -216,13 +217,13 @@ model CourseQuestion {
 }
 
 model CourseComment {
-  id String @id @default(uuid())
-  content String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id         String @id @default(uuid())
+  content    String
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
 
   // FK
-  userId String @map("user_id")
+  userId     String @map("user_id")
   questionId String @map("question_id")
 
   // relations
@@ -233,14 +234,14 @@ model CourseComment {
 }
 
 model LectureActivity {
-  id String @id @default(uuid())
-  progress Int @default(0)
-  isCompleted Boolean @default(false) @map("is_completed")
+  id            String @id @default(uuid())
+  progress      Int @default(0)
+  isCompleted   Boolean @default(false) @map("is_completed")
   lastWatchedAt DateTime @default(now()) @map("last_watched_at")
 
   // FK
-  userId String @map("user_id")
-  lectureId String @map("lecture_id")
+  userId        String @map("user_id")
+  lectureId     String @map("lecture_id")
 
   // relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
