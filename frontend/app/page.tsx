@@ -6,6 +6,7 @@ export default async function Home() {
   return (
     <div>
       <p>이메일: {userSession?.user?.email}</p>
+      <pre>{JSON.stringify(userSession)}</pre>
       <form action={signOut}>
         <button
           type="submit"

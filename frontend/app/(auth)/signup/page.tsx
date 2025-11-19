@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, Check } from "lucide-react";
-import { signUp } from "@/app/actions/auth-actions";
+import { signInWithKakao, signUp } from "@/app/actions/auth-actions";
 import { redirect } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +18,7 @@ const socialProviders = [
     label: "카카오 회원가입",
     icon: "/icons/kakao.svg",
     bgStyle: "bg-[#ffd43b] hover:bg-[#fcc419]",
+    signIn: signInWithKakao,
   },
   {
     id: "google-provider",
@@ -201,6 +202,7 @@ export default function SignupPage() {
                   provider.bgStyle
                 )}
                 aria-label={provider.label}
+                onClick={provider.signIn}
               >
                 <Image
                   src={provider.icon}

@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import KaKaoProvider from "next-auth/providers/kakao";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/prisma";
 import { comparePassword } from "@/shared/lib/auth-util";
@@ -66,6 +67,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return user;
       },
     }),
+    KaKaoProvider({
+      clientId: process.env.AUTH_KAKAO_ID,
+      clientSecret: process.env.AUTH_KAKAO_SECRET,
+    }),
+
   ],
   session: {
     strategy: "jwt",
@@ -108,4 +114,5 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
     },
   },
+
 });

@@ -63,3 +63,8 @@ export const signUp = async ({
 export const signOut = async () => {
   await signOutWithAuthJS();
 };
+
+export const signInWithKakao = async () => {
+  await signInWithAuthJS("kakao", { callbackUrl: "/" });
+};
+
