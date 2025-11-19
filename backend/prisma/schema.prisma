@@ -55,7 +55,10 @@ model User {
   sessions       Session[]
 
   // relations
+  courses Course[]
   courseEnrollments CourseEnrollment[]
+  courseReviews CourseReview[]
+
   @@map("users")
 }
 
@@ -86,11 +89,12 @@ model Course {
   instructorId     String   @map("instructor_id")
 
   // relations
+  instructor User @relation(fields: [instructorId], references: [id], onDelete: Cascade)
   sections Section[]
   lectures Lecture[]
   categories CourseCategory[]
   enrollments CourseEnrollment[]
-
+  reviews CourseReview[]
   @@map("courses")
 }
 
@@ -131,7 +135,6 @@ model Lecture {
   section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   
-
   @@map("lectures")
 }
 
@@ -166,3 +169,24 @@ model CourseEnrollment {
   @@unique([userId, courseId])
   @@map("course_enrollments")
 }
+
+model CourseReview {
+  id String @id @default(uuid())
+  content String
+  rating Int
+  instructorReply String? @map("instructor_reply")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // FK
+  userId String @map("user_id")
+  courseId String @map("course_id")
+
+  // relations
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@map("course_reviews")
+}
+
