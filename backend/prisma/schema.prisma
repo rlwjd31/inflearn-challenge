@@ -86,6 +86,7 @@ model Course {
   // relations
   sections Section[]
   lectures Lecture[]
+  categories CourseCategory[]
 
   @@map("courses")
 }
@@ -128,4 +129,16 @@ model Lecture {
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   @@map("lectures")
+}
+
+model CourseCategory {
+  id          String @id @default(cuid())
+  name        String
+  slug        String @unique
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // relations
+  courses Course[]
 }
