@@ -81,5 +81,22 @@ model Course {
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
 
+  // relations
+  sections Section[]
   @@map("courses")
+}
+
+model Section {
+  id String @id @default(cuid())
+  title String
+  description String?
+  order Int
+  courseId String @map("course_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // relations
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@map("sections")
 }
