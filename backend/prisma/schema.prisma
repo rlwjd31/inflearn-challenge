@@ -65,3 +65,21 @@ model VerificationToken {
   @@unique([identifier, token])
   @@map("verification_tokens")
 }
+
+model Course {
+  id               String   @id @default(cuid())
+  slug             String   @unique @map("slug")
+  title            String
+  shortDescription String?  @map("short_description")
+  description      String? 
+  thumbnailUrl     String?  @map("thumbnail_url")
+  price            Int      @default(0)
+  discountPrice    Int?     @map("discount_price")
+  level            String   @default("BEGINNER")
+  status           String   @default("DRAFT")
+  instructorId     String   @map("instructor_id")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@map("courses")
+}
