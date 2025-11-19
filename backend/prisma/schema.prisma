@@ -60,6 +60,7 @@ model User {
   courseReviews CourseReview[]
   courseQuestions CourseQuestion[]
   courseComments CourseComment[]
+  lectureActivities LectureActivity[]
 
   @@map("users")
 }
@@ -138,7 +139,8 @@ model Lecture {
   // relations
   section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  
+  activities LectureActivity[]
+
   @@map("lectures")
 }
 
@@ -222,10 +224,28 @@ model CourseComment {
   // FK
   userId String @map("user_id")
   questionId String @map("question_id")
-  
+
   // relations
   question CourseQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("course_comments")
+}
+
+model LectureActivity {
+  id String @id @default(uuid())
+  progress Int @default(0)
+  isCompleted Boolean @default(false) @map("is_completed")
+  lastWatchedAt DateTime @default(now()) @map("last_watched_at")
+
+  // FK
+  userId String @map("user_id")
+  lectureId String @map("lecture_id")
+
+  // relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lecture Lecture @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lectureId])
+  @@map("lecture_activities")
 }
