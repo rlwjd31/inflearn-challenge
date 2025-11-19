@@ -68,3 +68,6 @@ export const signInWithKakao = async () => {
   await signInWithAuthJS("kakao", { callbackUrl: "/" });
 };
 
+export const signInWithGoogle = async () => {
+  await signInWithAuthJS("google", { callbackUrl: "/" });
+};

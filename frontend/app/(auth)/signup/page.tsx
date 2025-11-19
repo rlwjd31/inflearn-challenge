@@ -8,7 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, Check } from "lucide-react";
-import { signInWithKakao, signUp } from "@/app/actions/auth-actions";
+import {
+  signInWithGoogle,
+  signInWithKakao,
+  signUp,
+} from "@/app/actions/auth-actions";
 import { redirect } from "next/navigation";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +29,7 @@ const socialProviders = [
     label: "구글 회원가입",
     icon: "/icons/google.svg",
     bgStyle: "bg-[#f1f3f5] hover:bg-[#e9ecef]",
+    signIn: signInWithGoogle,
   },
 ];
 
