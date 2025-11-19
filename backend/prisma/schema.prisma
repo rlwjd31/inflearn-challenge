@@ -59,6 +59,7 @@ model User {
   courseEnrollments CourseEnrollment[]
   courseReviews CourseReview[]
   courseQuestions CourseQuestion[]
+  courseComments CourseComment[]
 
   @@map("users")
 }
@@ -197,14 +198,34 @@ model CourseQuestion {
   id String @id @default(uuid())
   title String
   content String
-  userId String @map("user_id")
-  courseId String @map("course_id")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  // FK
+  userId String @map("user_id")
+  courseId String @map("course_id")
 
   // relations
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  comments CourseComment[]
+  
   @@map("course_questions")
+}
+
+model CourseComment {
+  id String @id @default(uuid())
+  content String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // FK
+  userId String @map("user_id")
+  questionId String @map("question_id")
+  
+  // relations
+  question CourseQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("course_comments")
 }
