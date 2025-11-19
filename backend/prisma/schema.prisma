@@ -54,6 +54,8 @@ model User {
   accounts       Account[]
   sessions       Session[]
 
+  // relations
+  courseEnrollments CourseEnrollment[]
   @@map("users")
 }
 
@@ -87,6 +89,7 @@ model Course {
   sections Section[]
   lectures Lecture[]
   categories CourseCategory[]
+  enrollments CourseEnrollment[]
 
   @@map("courses")
 }
@@ -127,6 +130,7 @@ model Lecture {
   // relations
   section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  
 
   @@map("lectures")
 }
@@ -141,4 +145,24 @@ model CourseCategory {
 
   // relations
   courses Course[]
+
+  @@map("course_categories")
+}
+
+model CourseEnrollment {
+  id String @id @default(cuid())
+  enrolledAt DateTime @default(now()) @map("enrolled_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // FK
+  userId String @map("user_id")
+  courseId String @map("course_id")
+
+  // relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@map("course_enrollments")
 }
