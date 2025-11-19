@@ -58,6 +58,7 @@ model User {
   courses Course[]
   courseEnrollments CourseEnrollment[]
   courseReviews CourseReview[]
+  courseQuestions CourseQuestion[]
 
   @@map("users")
 }
@@ -95,6 +96,8 @@ model Course {
   categories CourseCategory[]
   enrollments CourseEnrollment[]
   reviews CourseReview[]
+  questions CourseQuestion[]
+
   @@map("courses")
 }
 
@@ -190,3 +193,18 @@ model CourseReview {
   @@map("course_reviews")
 }
 
+model CourseQuestion {
+  id String @id @default(uuid())
+  title String
+  content String
+  userId String @map("user_id")
+  courseId String @map("course_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // relations
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("course_questions")
+}
