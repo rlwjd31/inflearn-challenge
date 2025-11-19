@@ -71,7 +71,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientId: process.env.AUTH_KAKAO_ID,
       clientSecret: process.env.AUTH_KAKAO_SECRET,
     }),
-
   ],
   session: {
     strategy: "jwt",
@@ -114,5 +113,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
     },
   },
+  callbacks: {
+    signIn: async (params) => {
+      console.log("below is user Info after kakao oauth");
+      console.log({ params });
+      return true;
+    },
 
+    // * 해당 redirect는 모든 인증 관련(signin, singout, error 등)이 발생했을 때만 실행된다.
+    redirect: async () => {
+      return process.env.NODE_ENV === "production"
+        ? `${process.env.PRODUCTION_HOST_URL}/`
+        : `${process.env.DEVELOPMENT_HOST_URL}/`;
+    },
+  },
 });
