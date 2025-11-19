@@ -77,26 +77,55 @@ model Course {
   discountPrice    Int?     @map("discount_price")
   level            String   @default("BEGINNER")
   status           String   @default("DRAFT")
-  instructorId     String   @map("instructor_id")
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
 
+  // FK
+  instructorId     String   @map("instructor_id")
+
   // relations
   sections Section[]
+  lectures Lecture[]
+
   @@map("courses")
 }
 
 model Section {
-  id String @id @default(cuid())
-  title String
+  id          String @id @default(cuid())
+  title       String
   description String?
-  order Int
-  courseId String @map("course_id")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  order       Int
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // FK
+  courseId    String @map("course_id")
 
   // relations
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lectures Lecture[]
 
   @@map("sections")
+}
+
+model Lecture {
+  id               String @id @default(cuid())
+  title            String
+  description      String?
+  order            Int
+  duration         Int?
+  isPreview        Boolean @default(false) @map("is_preview")
+  videoStorageInfo Json? @map("video_storage_info")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  // FK
+  sectionId        String @map("section_id")
+  courseId         String @map("course_id")
+
+  // relations
+  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@map("lectures")
 }
