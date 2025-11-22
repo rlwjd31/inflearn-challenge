@@ -13,7 +13,7 @@ import {
   CourseDTO,
   CourseLevel,
   CourseStatus,
-} from 'src/courses/dto/course.dto';
+} from 'src/courses/entities/course.entity';
 
 class CreateCourseDTOType extends OmitType(CourseDTO, [
   'id',

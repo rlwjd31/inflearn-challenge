@@ -172,5 +172,3 @@ export class CourseDTO implements NullableToUndefined<Course> {
   })
   questions?: CourseQuestion[];
 }
-
-// TODO: course entity로 빼기
