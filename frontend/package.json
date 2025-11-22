@@ -67,6 +67,8 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@hey-api/client-next": "0.5.1",
+    "@hey-api/openapi-ts": "0.88.0",
     "@tailwindcss/postcss": "^4",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
