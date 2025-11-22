@@ -1,5 +1,3 @@
-// FIXME: prisma의 schema를 implements하여 null type을 강제로 작성해야하는 문제
-
 import { ApiProperty } from '@nestjs/swagger';
 import {
   Course,
@@ -10,6 +8,8 @@ import {
   Lecture,
   Section,
 } from '@prisma/client';
+
+import { NullableToUndefined } from 'src/types/nullable-to-undefined-util.type';
 
 export enum CourseLevel {
   BEGINNER = 'BEGINNER',
@@ -23,7 +23,7 @@ export enum CourseStatus {
   ARCHIVED = 'ARCHIVED',
 }
 
-export class CourseDTO implements Course {
+export class CourseDTO implements NullableToUndefined<Course> {
   @ApiProperty({
     description: '강좌 고유 식별 ID',
     type: String,
@@ -52,25 +52,22 @@ export class CourseDTO implements Course {
     description: '강좌 1~2줄 짧은 설명',
     type: String,
     required: false,
-    nullable: true,
   })
-  shortDescription: string | null;
+  shortDescription?: string;
 
   @ApiProperty({
     description: '강좌 상세페이지 설명',
     type: String,
     required: false,
-    nullable: true,
   })
-  description: string | null;
+  description?: string;
 
   @ApiProperty({
     description: '강좌 썸네일 URL',
     type: String,
     required: false,
-    nullable: true,
   })
-  thumbnailUrl: string | null;
+  thumbnailUrl?: string;
 
   @ApiProperty({
     description: '강좌 가격(만원 단위)',
@@ -84,9 +81,8 @@ export class CourseDTO implements Course {
     description: '강좌 할인 가격',
     type: Number,
     required: false,
-    nullable: true,
   })
-  discountPrice: number | null;
+  discountPrice?: number;
 
   @ApiProperty({
     description: '강좌 난이도. ',
@@ -136,47 +132,41 @@ export class CourseDTO implements Course {
     // TODO: same as lectures, categories, enrollments, reviews, questions
     type: Object,
     required: false,
-    nullable: true,
   })
-  sections: Section[] | null;
+  sections?: Section[];
 
   @ApiProperty({
     isArray: true,
     type: Object,
     required: false,
-    nullable: true,
   })
-  lectures: Lecture[] | null;
+  lectures?: Lecture[];
 
   @ApiProperty({
     isArray: true,
     type: Object,
     required: false,
-    nullable: true,
   })
-  categories: CourseCategory[] | null;
+  categories?: CourseCategory[];
 
   @ApiProperty({
     isArray: true,
     type: Object,
     required: false,
-    nullable: true,
   })
-  enrollments: CourseEnrollment[] | null;
+  enrollments?: CourseEnrollment[];
 
   @ApiProperty({
     isArray: true,
     type: Object,
     required: false,
-    nullable: true,
   })
-  reviews: CourseReview[] | null;
+  reviews?: CourseReview[];
 
   @ApiProperty({
     isArray: true,
     type: Object,
     required: false,
-    nullable: true,
   })
-  questions: CourseQuestion[] | null;
+  questions?: CourseQuestion[];
 }
