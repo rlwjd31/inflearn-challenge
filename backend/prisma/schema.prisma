@@ -74,7 +74,7 @@ model VerificationToken {
 }
 
 model Course {
-  id               String   @id @default(cuid())
+  id               String   @id @default(uuid())
   slug             String   @unique @map("slug")
   title            String
   shortDescription String?  @map("short_description")
@@ -103,7 +103,7 @@ model Course {
 }
 
 model Section {
-  id          String @id @default(cuid())
+  id          String @id @default(uuid())
   title       String
   description String?
   order       Int
@@ -121,7 +121,7 @@ model Section {
 }
 
 model Lecture {
-  id               String @id @default(cuid())
+  id               String @id @default(uuid())
   title            String
   description      String?
   order            Int
@@ -144,7 +144,7 @@ model Lecture {
 }
 
 model CourseCategory {
-  id          String @id @default(cuid())
+  id          String @id @default(uuid())
   name        String
   slug        String @unique
   description String?
@@ -158,7 +158,7 @@ model CourseCategory {
 }
 
 model CourseEnrollment {
-  id         String @id @default(cuid())
+  id         String @id @default(uuid())
   enrolledAt DateTime @default(now()) @map("enrolled_at")
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
