@@ -1,3 +1,5 @@
+// FIXME: prisma의 schema를 implements하여 null type을 강제로 작성해야하는 문제
+
 import { ApiProperty } from '@nestjs/swagger';
 import {
   Course,
