@@ -23,7 +23,7 @@ export enum CourseStatus {
   ARCHIVED = 'ARCHIVED',
 }
 
-export class CourseDTO implements NullableToUndefined<Course> {
+export class CourseEntity implements NullableToUndefined<Course> {
   @ApiProperty({
     description: '강좌 고유 식별 ID',
     type: String,
