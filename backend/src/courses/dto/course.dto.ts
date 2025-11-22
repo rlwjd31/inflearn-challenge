@@ -89,6 +89,7 @@ export class CourseDTO implements NullableToUndefined<Course> {
     enum: CourseLevel,
     example: CourseLevel, // 'beginner', 'intermediate', 'advanced'와 같이 string 형태로 작성을 해야 하나...?
     default: CourseLevel.BEGINNER,
+    required: false,
   })
   level: CourseLevel;
 
@@ -97,6 +98,7 @@ export class CourseDTO implements NullableToUndefined<Course> {
     enum: CourseStatus,
     example: CourseStatus,
     default: CourseStatus.DRAFT,
+    required: false,
   })
   status: CourseStatus;
 
@@ -170,3 +172,5 @@ export class CourseDTO implements NullableToUndefined<Course> {
   })
   questions?: CourseQuestion[];
 }
+
+// TODO: course entity로 빼기
