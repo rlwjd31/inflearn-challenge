@@ -1,58 +1,89 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsArray,
+  IsEnum,
   IsNumber,
   IsOptional,
   IsString,
   IsUUID,
 } from 'class-validator';
 
-export class CreateCourseDTO {
-  @ApiProperty({ description: '강좌 제목' })
-  @IsString()
-  title: string;
+import {
+  CourseDTO,
+  CourseLevel,
+  CourseStatus,
+} from 'src/courses/dto/course.dto';
 
-  @ApiProperty({ description: '강좌 슬러그(URL에 사용됨)' })
+class CreateCourseDTOType extends OmitType(CourseDTO, [
+  'id',
+  'createdAt',
+  'updatedAt',
+  'instructorId',
+  'sections',
+  'lectures',
+  'categories',
+  'enrollments',
+  'reviews',
+  'questions',
+]) {}
+
+export class CreateCourseDTO extends CreateCourseDTOType {
   @IsString()
   slug: string;
 
-  @ApiProperty({ description: '강좌 가격' })
-  @IsNumber()
-  price: number;
+  @IsString()
+  title: string;
 
-  @ApiProperty({ description: '강좌 1~2줄 짧은 설명' })
   @IsString()
   @IsOptional()
   shortDescription?: string;
 
-  @ApiProperty({ description: '강좌 상세페이지 설명' })
   @IsString()
   @IsOptional()
   description?: string;
 
-  @ApiProperty({ description: '강좌 썸네일 URL' })
   @IsString()
   @IsOptional()
   thumbnailUrl?: string;
 
-  @ApiProperty({ description: '강좌 할인 가격' })
+  @IsNumber()
+  price: number;
+
   @IsNumber()
   @IsOptional()
   discountPrice?: number;
 
-  @ApiProperty({
-    description: '강좌 난이도. e.g) BEGINNER, INTERMEDIATE, ADVANCED',
+  // @ApiProperty({
+  //   description: '강좌 난이도. e.g) BEGINNER, INTERMEDIATE, ADVANCED',
+  // })
+  @IsEnum(CourseLevel)
+  @Transform(({ value }) => {
+    if (!value) return CourseLevel.BEGINNER;
+
+    const upperValue = (value as string).toUpperCase();
+    return CourseLevel[upperValue] ? upperValue : CourseLevel.BEGINNER;
   })
-  @IsString()
   @IsOptional()
-  level?: string;
+  level: CourseLevel;
 
-  @ApiProperty({ description: '강좌 상태. e.g) DRAFT, PUBLISHED, ARCHIVED' })
-  @IsString()
+  // @ApiProperty({ description: '강좌 상태. e.g) DRAFT, PUBLISHED, ARCHIVED' })
+  @IsEnum(CourseStatus)
+  @Transform(({ value }) => {
+    if (!value) return CourseStatus.DRAFT;
+
+    const upperValue = (value as string).toUpperCase();
+    return CourseStatus[upperValue] ? upperValue : CourseStatus.DRAFT;
+  })
   @IsOptional()
-  status?: string;
+  status: CourseStatus;
 
-  @ApiProperty({ description: '강좌 카테고리 ID 목록' })
+  // 해당 field는 create, update course에서 값을 편하게 넣어주기 위한 값임
+  @ApiProperty({
+    description: '강좌 카테고리 ID 목록',
+    type: [String],
+    required: false,
+  })
   @IsArray()
   @IsOptional()
   @IsUUID(undefined, { each: true }) // 각 요소는 UUID 형식임을 검증
