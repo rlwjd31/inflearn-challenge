@@ -59,10 +59,16 @@ export class CoursesService {
     if (course.instructorId !== userId) {
       throw new UnauthorizedException('강의의 소유자만 수정할 수 있습니다.');
     }
+    const { categoryIds, ...others } = updateCourseDTO;
 
     return this.prisma.course.update({
       where: { id },
-      data: updateCourseDTO,
+      data: {
+        ...others,
+        categories: {
+          set: categoryIds ? categoryIds.map((id) => ({ id })) : undefined,
+        },
+      },
     });
   }
 
