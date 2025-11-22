@@ -13,11 +13,18 @@ import {
 } from '@nestjs/common';
 import { CoursesService } from './courses.service';
 import { JWTAccessTokenGuard } from 'src/ auth/guards/jwt-access-token.guard';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import type { Request as ExpressRequest } from 'express';
-import { CreateCourseDTO } from 'src/courses/dto/create-course.dto';
 import { Prisma } from '@prisma/client';
+
+import { CreateCourseDTO } from 'src/courses/dto/create-course.dto';
 import { UpdateCourseDTO } from 'src/courses/dto/update-course.dto';
+import { CourseEntity } from 'src/courses/entities/course.entity';
 
 @ApiTags('courses')
 @Controller('courses')
@@ -27,6 +34,10 @@ export class CoursesController {
   @Post()
   @UseGuards(JWTAccessTokenGuard)
   @ApiBearerAuth('access-token')
+  @ApiOkResponse({
+    description: '강좌 생성',
+    type: CourseEntity,
+  })
   create(
     @Request() req: ExpressRequest,
     @Body() createCourseDTO: CreateCourseDTO,
@@ -40,6 +51,11 @@ export class CoursesController {
   @ApiQuery({ name: 'categoryId', required: false })
   @ApiQuery({ name: 'skip', required: false })
   @ApiQuery({ name: 'take', required: false })
+  @ApiOkResponse({
+    description: '강좌 목록',
+    isArray: true,
+    type: CourseEntity,
+  })
   findAll(
     @Query('title') title?: string,
     @Query('level') level?: string,
@@ -65,6 +81,10 @@ export class CoursesController {
     required: false,
     description: 'sections, lectures, courseReviews 등 포함한 관계 지정',
   })
+  @ApiOkResponse({
+    description: '강좌 상세 정보',
+    type: CourseEntity,
+  })
   findOne(
     @Param('id', ParseUUIDPipe) id: string,
     @Query('include') include?: string,
@@ -79,6 +99,10 @@ export class CoursesController {
   @Patch(':id')
   @UseGuards(JWTAccessTokenGuard)
   @ApiBearerAuth('access-token')
+  @ApiOkResponse({
+    description: '강좌 수정',
+    type: CourseEntity,
+  })
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Request() req: ExpressRequest,
@@ -94,6 +118,10 @@ export class CoursesController {
   @Delete(':id')
   @ApiBearerAuth('access-token')
   @UseGuards(JWTAccessTokenGuard)
+  @ApiOkResponse({
+    description: '강좌 삭제',
+    type: CourseEntity,
+  })
   delete(
     @Param('id', ParseUUIDPipe) id: string,
     @Request() req: ExpressRequest,
