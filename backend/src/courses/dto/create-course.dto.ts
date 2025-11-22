@@ -7,7 +7,7 @@ import {
   IsUUID,
 } from 'class-validator';
 
-export class CreateCourseDto {
+export class CreateCourseDTO {
   @ApiProperty({ description: '강좌 제목' })
   @IsString()
   title: string;

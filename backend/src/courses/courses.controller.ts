@@ -15,9 +15,9 @@ import { CoursesService } from './courses.service';
 import { JWTAccessTokenGuard } from 'src/ auth/guards/jwt-access-token.guard';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import type { Request as ExpressRequest } from 'express';
-import { CreateCourseDto } from 'src/courses/dto/create-course.dto';
+import { CreateCourseDTO } from 'src/courses/dto/create-course.dto';
 import { Prisma } from '@prisma/client';
-import { UpdateCourseDto } from 'src/courses/dto/update-course.dto';
+import { UpdateCourseDTO } from 'src/courses/dto/update-course.dto';
 
 @ApiTags('courses')
 @Controller('courses')
@@ -29,9 +29,9 @@ export class CoursesController {
   @ApiBearerAuth('access-token')
   create(
     @Request() req: ExpressRequest,
-    @Body() createCourseDto: CreateCourseDto,
+    @Body() createCourseDTO: CreateCourseDTO,
   ) {
-    return this.coursesService.create(req.user?.sub as string, createCourseDto);
+    return this.coursesService.create(req.user?.sub as string, createCourseDTO);
   }
 
   @Get()
@@ -82,12 +82,12 @@ export class CoursesController {
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Request() req: ExpressRequest,
-    @Body() updateCourseDto: UpdateCourseDto,
+    @Body() updateCourseDTO: UpdateCourseDTO,
   ) {
     return this.coursesService.update(
       id,
       req.user?.sub as string,
-      updateCourseDto,
+      updateCourseDTO,
     );
   }
 

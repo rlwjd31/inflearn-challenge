@@ -4,8 +4,8 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Course, Prisma } from '@prisma/client';
-import { CreateCourseDto } from 'src/courses/dto/create-course.dto';
-import { UpdateCourseDto } from 'src/courses/dto/update-course.dto';
+import { CreateCourseDTO } from 'src/courses/dto/create-course.dto';
+import { UpdateCourseDTO } from 'src/courses/dto/update-course.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -14,9 +14,9 @@ export class CoursesService {
 
   async create(
     userId: string,
-    createCourseDto: CreateCourseDto,
+    createCourseDTO: CreateCourseDTO,
   ): Promise<Course> {
-    const { categoryIds, ...otherData } = createCourseDto;
+    const { categoryIds, ...otherData } = createCourseDTO;
 
     return this.prisma.course.create({
       data: {
@@ -46,7 +46,7 @@ export class CoursesService {
   async update(
     id: string,
     userId: string,
-    updateCourseDto: UpdateCourseDto,
+    updateCourseDTO: UpdateCourseDTO,
   ): Promise<Course> {
     const course = await this.prisma.course.findUnique({
       where: { id },
@@ -62,7 +62,7 @@ export class CoursesService {
 
     return this.prisma.course.update({
       where: { id },
-      data: updateCourseDto,
+      data: updateCourseDTO,
     });
   }
 
@@ -83,22 +83,4 @@ export class CoursesService {
       where: { id },
     });
   }
-
-  // async findAll(params: {
-  //   skip?: number;
-  //   take?: number;
-  //   cursor: Prisma.CourseWhereUniqueInput;
-  //   where?: Prisma.CourseWhereInput;
-  //   orderBy?: Prisma.CourseOrderByWithRelationInput
-  // }): Promise<Course[]> {
-
-  //   const { skip, take, cursor, where, orderBy } = params;
-  //   return this.prisma.course.findMany({
-  //     skip,
-  //     take,
-  //     cursor,
-  //     where,
-  //     orderBy,
-  //   });
-  // }
 }
