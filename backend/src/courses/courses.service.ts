@@ -7,23 +7,17 @@ import { Course, Prisma } from '@prisma/client';
 import { CreateCourseDTO } from 'src/courses/dto/create-course.dto';
 import { UpdateCourseDTO } from 'src/courses/dto/update-course.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import slug from 'slug';
 
 @Injectable()
 export class CoursesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(
-    userId: string,
-    createCourseDTO: CreateCourseDTO,
-  ): Promise<Course> {
-    const { categoryIds, ...otherData } = createCourseDTO;
-
+  async create(userId: string, createCourseDTO: CreateCourseDTO) {
     return this.prisma.course.create({
       data: {
-        ...otherData,
-        categories: {
-          connect: (categoryIds ?? []).map((id) => ({ id })),
-        },
+        slug: slug(createCourseDTO.title),
+        title: createCourseDTO.title,
         instructorId: userId,
       },
     });
