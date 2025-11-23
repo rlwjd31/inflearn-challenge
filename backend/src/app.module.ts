@@ -5,9 +5,18 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from 'src/ auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { CoursesModule } from './courses/courses.module';
+import { LecturesModule } from './lectures/lectures.module';
+import { SectionsModule } from './sections/sections.module';
 
 @Module({
-  imports: [AuthModule, ConfigModule.forRoot({}), PrismaModule, CoursesModule],
+  imports: [
+    AuthModule,
+    ConfigModule.forRoot({}),
+    PrismaModule,
+    CoursesModule,
+    LecturesModule,
+    SectionsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
