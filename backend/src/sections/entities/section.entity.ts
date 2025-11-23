@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Lecture, Section } from '@prisma/client';
+import { Section } from '@prisma/client';
 import { CourseEntity } from 'src/courses/entities/course.entity';
+import { LectureEntity } from 'src/lectures/entities/lecture.entity';
 
 import { NullableToUndefined } from 'src/types/nullable-to-undefined-util.type';
 
@@ -73,10 +74,9 @@ export class SectionEntity implements NullableToUndefined<Section> {
 
   @ApiProperty({
     description: '섹션 강의 목록',
-    // TODO: have to convert Object type to like () => LectureDTO after defined Lecture
     isArray: true,
     type: Object,
     required: false,
   })
-  lectures?: Lecture[];
+  lectures?: LectureEntity[];
 }
