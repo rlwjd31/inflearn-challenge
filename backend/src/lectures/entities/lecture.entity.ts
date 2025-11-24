@@ -50,12 +50,13 @@ export class LectureEntity implements NullableToUndefined<Lecture> {
     description: '강의 미리보기 여부',
     type: Boolean,
     example: false,
+    default: false,
     required: false,
   })
   isPreview: boolean;
 
   @ApiProperty({
-    description: '강의 저장 정보',
+    description: '강의 비디오 업로드 정보',
     type: Object,
     example: {
       url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
