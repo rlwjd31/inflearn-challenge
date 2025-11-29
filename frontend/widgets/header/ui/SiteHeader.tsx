@@ -17,9 +17,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Search,
-  Globe,
-  Play,
-  ShoppingCart,
   Menu,
   X,
   Grid3x3,
@@ -42,6 +39,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { CategoryEntity } from "@/generated/openapi-client";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 const categoryIcons: Record<
   string,
@@ -76,10 +74,9 @@ export default function SiteHeader({
 }: {
   categories: CategoryEntity[];
 }) {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(
-    "전체"
-  );
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const showCategorySection = !pathname.includes("instructor");
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background">
@@ -234,36 +231,31 @@ export default function SiteHeader({
       )}
 
       {/* Categories Bar */}
-      <nav className="bg-background">
-        <ScrollArea className="w-full" orientation="horizontal">
-          <div className="flex items-center gap-1 px-4 py-2 md:px-6">
-            {/*  Categories props */}
-            {categories.map((category) => {
-              const Icon = getCategoryIcon(category.name);
-              const isSelected = selectedCategory === category.slug;
+      {showCategorySection && (
+        <nav className="bg-background">
+          <ScrollArea className="w-full" orientation="horizontal">
+            <div className="flex items-center gap-3 py-2 md:px-6">
+              {/*  Categories props */}
+              {categories.map((category) => {
+                const Icon = getCategoryIcon(category.name);
 
-              return (
-                <Button
-                  key={category.id}
-                  variant="ghost"
-                  size="sm"
-                  className={cn(
-                    "flex-col items-center py-8 px-3 shrink-0 gap-2 rounded-md ",
-                    isSelected &&
-                      "bg-primary/10 text-primary underline decoration-primary underline-offset-4"
-                  )}
-                  onClick={() => setSelectedCategory(category.slug)}
-                >
-                  <Icon className="size-4" />
-                  <span className="text-sm whitespace-nowrap">
-                    {category.name}
-                  </span>
-                </Button>
-              );
-            })}
-          </div>
-        </ScrollArea>
-      </nav>
+                return (
+                  <Link
+                    href={`/courses/${category.slug}`}
+                    key={category.id}
+                    className="category-item flex flex-col gap-2 items-center min-w-[72px] text-gray-700 hover:text-[#1dc078] cursor-pointer transition-colors"
+                  >
+                    <Icon className="size-4" />
+                    <span className="text-sm whitespace-nowrap">
+                      {category.name}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </ScrollArea>
+        </nav>
+      )}
     </header>
   );
 }
