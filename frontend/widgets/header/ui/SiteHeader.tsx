@@ -60,6 +60,8 @@ const categoryIcons: Record<
   "대학 교육": GraduationCap,
 };
 
+const hideCategoryRoutes = ["/instructor", "/create_courses"];
+
 const getCategoryIcon = (name: string) => {
   for (const [key, Icon] of Object.entries(categoryIcons)) {
     if (name.includes(key) || key.includes(name)) {
@@ -76,7 +78,7 @@ export default function SiteHeader({
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const showCategorySection = !pathname.includes("instructor");
+  const showCategorySection = !hideCategoryRoutes.includes(pathname);
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background">
