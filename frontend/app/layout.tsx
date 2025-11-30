@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "@/app/providers";
 import * as api from "@/lib/api";
 import { SiteHeader } from "@/widgets/header";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +36,7 @@ export default async function RootLayout({
           <SiteHeader categories={categories ?? []} />
           {children}
         </Providers>
+        <Toaster position="top-right" />
       </body>
     </html>
   );
