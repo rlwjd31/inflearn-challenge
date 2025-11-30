@@ -4,6 +4,7 @@ import {
   categoriesControllerFindAll,
   coursesControllerCreate,
   coursesControllerFindAll,
+  coursesControllerFindOne,
 } from "@/generated/openapi-client";
 
 type ApiError = {
@@ -44,4 +45,16 @@ export const createCourse = async (title: string) => {
   return {
     data,
   };
+};
+
+export const getCourseById = async (id: string) => {
+  const { data, error } = await coursesControllerFindOne({
+    path: { id },
+  });
+
+  if (error) {
+    throwApiError(error as ApiError);
+  }
+
+  return { data };
 };
