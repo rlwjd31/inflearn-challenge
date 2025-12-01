@@ -5,6 +5,8 @@ import {
   coursesControllerCreate,
   coursesControllerFindAll,
   coursesControllerFindOne,
+  coursesControllerUpdate,
+  UpdateCourseDto,
 } from "@/generated/openapi-client";
 
 type ApiError = {
@@ -57,4 +59,17 @@ export const getCourseById = async (id: string) => {
   }
 
   return { data };
+};
+
+export const updateCourse = async (id: string, data: UpdateCourseDto) => {
+  const { data: course, error } = await coursesControllerUpdate({
+    path: { id },
+    body: data,
+  });
+
+  if (error) {
+    throwApiError(error as ApiError);
+  }
+
+  return { data: course };
 };
