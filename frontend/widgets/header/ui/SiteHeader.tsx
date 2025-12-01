@@ -61,6 +61,7 @@ const categoryIcons: Record<
 };
 
 const hideCategoryRoutes = ["/instructor", "/create_courses"];
+const hideHeaderRoutes = ["/course"];
 
 const getCategoryIcon = (name: string) => {
   for (const [key, Icon] of Object.entries(categoryIcons)) {
@@ -78,7 +79,12 @@ export default function SiteHeader({
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const showHeader = !hideHeaderRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
   const showCategorySection = !hideCategoryRoutes.includes(pathname);
+
+  if (!showHeader) return null;
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background">
