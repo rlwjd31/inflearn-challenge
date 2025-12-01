@@ -6,6 +6,9 @@ import {
   coursesControllerFindAll,
   coursesControllerFindOne,
   coursesControllerUpdate,
+  lecturesControllerCreate,
+  lecturesControllerDelete,
+  lecturesControllerUpdate,
   sectionsControllerCreate,
   sectionsControllerDelete,
   sectionsControllerUpdate,
@@ -119,4 +122,50 @@ export const deleteSection = async (sectionId: string) => {
   return { data: section };
 };
 
+// * ==================== CRUD Operation of Lecture apis ====================
+export const createLecture = async (sectionId: string, title: string) => {
+  const { data: lecture, error } = await lecturesControllerCreate({
+    path: { sectionId },
+    body: { title },
+  });
 
+  if (error) {
+    throwApiError(error as ApiError);
+  }
+
+  return { data: lecture };
+};
+
+export const updateLecturePreview = async (
+  lectureId: string,
+  isPreview: boolean
+) => {
+  const { data: lecture, error } = await lecturesControllerUpdate({
+    path: { lectureId },
+    body: { isPreview },
+  });
+
+  if (error) {
+    throwApiError(error as ApiError);
+  }
+
+  return { data: lecture };
+};
+
+export const deleteLecture = async (lectureId: string) => {
+  const { data: lecture, error } = await lecturesControllerDelete({
+    path: { lectureId },
+  });
+
+  if (error) {
+    throwApiError(error as ApiError);
+  }
+
+  return { data: lecture };
+};
+
+export const getLectureById = async (lectureId: string) => {
+  const { data: lecture, error } = await lecturesControllerFindOne({
+    path: { lectureId },
+  });
+};
