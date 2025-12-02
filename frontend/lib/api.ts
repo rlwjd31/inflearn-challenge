@@ -163,9 +163,3 @@ export const deleteLecture = async (lectureId: string) => {
 
   return { data: lecture };
 };
-
-export const getLectureById = async (lectureId: string) => {
-  const { data: lecture, error } = await lecturesControllerFindOne({
-    path: { lectureId },
-  });
-};

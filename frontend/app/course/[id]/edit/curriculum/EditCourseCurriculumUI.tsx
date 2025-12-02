@@ -90,11 +90,36 @@ export default function EditCourseCurriculumUI({
     },
   });
 
+  const deleteSectionMutation = useMutation({
+    mutationFn: async (sectionId: string) => {
+      if (!course) {
+        toast.error("강좌를 불러오는데 오류가 발생했습니다.");
+        return;
+      }
+
+      return await api.deleteSection(sectionId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["course", courseProps.id],
+      });
+
+      toast.success("섹션이 삭제되었습니다.");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   // UI handler
   const handleAddSection = () => {
     // section title이 비어있으면 기본 값으로 placeholder 값을 넣어줌
     addSectionMutation.mutate(addSectionTitle || "섹션 제목을 작성해주세요.");
     setAddSectionTitle("");
+  };
+
+  const handleDeleteSection = (sectionId: string) => {
+    deleteSectionMutation.mutate(sectionId);
   };
 
   // * UI rendering logic
@@ -150,7 +175,18 @@ export default function EditCourseCurriculumUI({
                     placeholder="섹션 제목을 작성해주세요."
                   />
                 </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDeleteSection(section.id)}
+                    className="text-red-500 hover:bg-red-100"
+                  >
+                    <Trash2 size={18} />
+                  </Button>
+                </div>
               </div>
+              <div className="space-y-2 mt-4"></div>
             </div>
           );
         }
