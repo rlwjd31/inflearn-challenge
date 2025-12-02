@@ -67,7 +67,7 @@ export class SectionEntity implements NullableToUndefined<Section> {
 
   @ApiProperty({
     description: '섹션이 포함된 강좌',
-    type: CourseEntity,
+    type: () => CourseEntity,
     required: false,
   })
   course?: CourseEntity;
@@ -75,7 +75,7 @@ export class SectionEntity implements NullableToUndefined<Section> {
   @ApiProperty({
     description: '섹션 강의 목록',
     isArray: true,
-    type: Object,
+    type: () => LectureEntity,
     required: false,
   })
   lectures?: LectureEntity[];

@@ -11,152 +11,6 @@ export type CreateCourseDto = {
   title: string;
 };
 
-export type CourseEntity = {
-  /**
-   * 강좌 고유 식별 ID
-   */
-  readonly id: string;
-  /**
-   * 강좌 슬러그(URL에 사용됨)
-   */
-  slug: string;
-  /**
-   * 강좌 제목
-   */
-  title: string;
-  /**
-   * 강좌 1~2줄 짧은 설명
-   */
-  shortDescription?: string;
-  /**
-   * 강좌 상세페이지 설명
-   */
-  description?: string;
-  /**
-   * 강좌 썸네일 URL
-   */
-  thumbnailUrl?: string;
-  /**
-   * 강좌 가격(만원 단위)
-   */
-  price: number;
-  /**
-   * 강좌 할인 가격
-   */
-  discountPrice?: number;
-  /**
-   * 강좌 난이도.
-   */
-  level?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
-  /**
-   * 강좌 상태. e.g) DRAFT, PUBLISHED, ARCHIVED
-   */
-  status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
-  /**
-   * 강좌 생성 시간
-   */
-  readonly createdAt: string;
-  /**
-   * 강좌가 마지막으로 업데이트 된 시간
-   */
-  readonly updatedAt: string;
-  /**
-   * 강좌 강사 ID
-   */
-  instructorId: string;
-  sections?: Array<unknown>;
-  lectures?: Array<unknown>;
-  categories?: Array<unknown>;
-  enrollments?: Array<unknown>;
-  reviews?: Array<unknown>;
-  questions?: Array<unknown>;
-};
-
-export type UpdateCourseDto = {
-  /**
-   * 강좌 제목
-   */
-  title: string;
-  /**
-   * 강좌 1~2줄 짧은 설명
-   */
-  shortDescription?: string;
-  /**
-   * 강좌 상세페이지 설명
-   */
-  description?: string;
-  /**
-   * 강좌 썸네일 URL
-   */
-  thumbnailUrl?: string;
-  /**
-   * 강좌 가격(만원 단위)
-   */
-  price: number;
-  /**
-   * 강좌 할인 가격
-   */
-  discountPrice?: number;
-  /**
-   * 강좌 난이도.
-   */
-  level?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
-  /**
-   * 강좌 상태. e.g) DRAFT, PUBLISHED, ARCHIVED
-   */
-  status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
-  /**
-   * 강좌 카테고리 ID 목록
-   */
-  categoryIds?: Array<string>;
-};
-
-export type CreateLectureDto = {
-  /**
-   * 강의 제목
-   */
-  title: string;
-};
-
-export type SectionEntity = {
-  /**
-   * 섹션 고유 식별 ID
-   */
-  readonly id: string;
-  /**
-   * 섹션 제목
-   */
-  title: string;
-  /**
-   * 섹션 설명
-   */
-  description?: string;
-  /**
-   * 섹션 순서
-   */
-  order: number;
-  /**
-   * 섹션 생성 시간
-   */
-  readonly createdAt: string;
-  /**
-   * 섹션 마지막 업데이트 시간
-   */
-  readonly updatedAt: string;
-  /**
-   * 섹션 코스 ID
-   */
-  courseId: string;
-  /**
-   * 섹션이 포함된 강좌
-   */
-  course?: CourseEntity;
-  /**
-   * 섹션 강의 목록
-   */
-  lectures?: Array<unknown>;
-};
-
 export type LectureEntity = {
   /**
    * 강의 고유 식별 ID
@@ -210,6 +64,152 @@ export type LectureEntity = {
    * 강의 활동 목록
    */
   activities?: Array<unknown>;
+};
+
+export type CourseEntity = {
+  /**
+   * 강좌 고유 식별 ID
+   */
+  readonly id: string;
+  /**
+   * 강좌 슬러그(URL에 사용됨)
+   */
+  slug: string;
+  /**
+   * 강좌 제목
+   */
+  title: string;
+  /**
+   * 강좌 1~2줄 짧은 설명
+   */
+  shortDescription?: string;
+  /**
+   * 강좌 상세페이지 설명
+   */
+  description?: string;
+  /**
+   * 강좌 썸네일 URL
+   */
+  thumbnailUrl?: string;
+  /**
+   * 강좌 가격(만원 단위)
+   */
+  price: number;
+  /**
+   * 강좌 할인 가격
+   */
+  discountPrice?: number;
+  /**
+   * 강좌 난이도.
+   */
+  level?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+  /**
+   * 강좌 상태. e.g) DRAFT, PUBLISHED, ARCHIVED
+   */
+  status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+  /**
+   * 강좌 생성 시간
+   */
+  readonly createdAt: string;
+  /**
+   * 강좌가 마지막으로 업데이트 된 시간
+   */
+  readonly updatedAt: string;
+  /**
+   * 강좌 강사 ID
+   */
+  instructorId: string;
+  sections?: Array<SectionEntity>;
+  lectures?: Array<LectureEntity>;
+  categories?: Array<unknown>;
+  enrollments?: Array<unknown>;
+  reviews?: Array<unknown>;
+  questions?: Array<unknown>;
+};
+
+export type SectionEntity = {
+  /**
+   * 섹션 고유 식별 ID
+   */
+  readonly id: string;
+  /**
+   * 섹션 제목
+   */
+  title: string;
+  /**
+   * 섹션 설명
+   */
+  description?: string;
+  /**
+   * 섹션 순서
+   */
+  order: number;
+  /**
+   * 섹션 생성 시간
+   */
+  readonly createdAt: string;
+  /**
+   * 섹션 마지막 업데이트 시간
+   */
+  readonly updatedAt: string;
+  /**
+   * 섹션 코스 ID
+   */
+  courseId: string;
+  /**
+   * 섹션이 포함된 강좌
+   */
+  course?: CourseEntity;
+  /**
+   * 섹션 강의 목록
+   */
+  lectures?: Array<LectureEntity>;
+};
+
+export type UpdateCourseDto = {
+  /**
+   * 강좌 제목
+   */
+  title: string;
+  /**
+   * 강좌 1~2줄 짧은 설명
+   */
+  shortDescription?: string;
+  /**
+   * 강좌 상세페이지 설명
+   */
+  description?: string;
+  /**
+   * 강좌 썸네일 URL
+   */
+  thumbnailUrl?: string;
+  /**
+   * 강좌 가격(만원 단위)
+   */
+  price: number;
+  /**
+   * 강좌 할인 가격
+   */
+  discountPrice?: number;
+  /**
+   * 강좌 난이도.
+   */
+  level?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+  /**
+   * 강좌 상태. e.g) DRAFT, PUBLISHED, ARCHIVED
+   */
+  status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+  /**
+   * 강좌 카테고리 ID 목록
+   */
+  categoryIds?: Array<string>;
+};
+
+export type CreateLectureDto = {
+  /**
+   * 강의 제목
+   */
+  title: string;
 };
 
 export type UpdateLectureDto = {
@@ -286,82 +286,6 @@ export type CategoryEntity = {
   readonly updatedAt: string;
 };
 
-export type CourseEntityWritable = {
-  /**
-   * 강좌 슬러그(URL에 사용됨)
-   */
-  slug: string;
-  /**
-   * 강좌 제목
-   */
-  title: string;
-  /**
-   * 강좌 1~2줄 짧은 설명
-   */
-  shortDescription?: string;
-  /**
-   * 강좌 상세페이지 설명
-   */
-  description?: string;
-  /**
-   * 강좌 썸네일 URL
-   */
-  thumbnailUrl?: string;
-  /**
-   * 강좌 가격(만원 단위)
-   */
-  price: number;
-  /**
-   * 강좌 할인 가격
-   */
-  discountPrice?: number;
-  /**
-   * 강좌 난이도.
-   */
-  level?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
-  /**
-   * 강좌 상태. e.g) DRAFT, PUBLISHED, ARCHIVED
-   */
-  status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
-  /**
-   * 강좌 강사 ID
-   */
-  instructorId: string;
-  sections?: Array<unknown>;
-  lectures?: Array<unknown>;
-  categories?: Array<unknown>;
-  enrollments?: Array<unknown>;
-  reviews?: Array<unknown>;
-  questions?: Array<unknown>;
-};
-
-export type SectionEntityWritable = {
-  /**
-   * 섹션 제목
-   */
-  title: string;
-  /**
-   * 섹션 설명
-   */
-  description?: string;
-  /**
-   * 섹션 순서
-   */
-  order: number;
-  /**
-   * 섹션 코스 ID
-   */
-  courseId: string;
-  /**
-   * 섹션이 포함된 강좌
-   */
-  course?: CourseEntityWritable;
-  /**
-   * 섹션 강의 목록
-   */
-  lectures?: Array<unknown>;
-};
-
 export type LectureEntityWritable = {
   /**
    * 강의 제목
@@ -403,6 +327,82 @@ export type LectureEntityWritable = {
    * 강의 활동 목록
    */
   activities?: Array<unknown>;
+};
+
+export type CourseEntityWritable = {
+  /**
+   * 강좌 슬러그(URL에 사용됨)
+   */
+  slug: string;
+  /**
+   * 강좌 제목
+   */
+  title: string;
+  /**
+   * 강좌 1~2줄 짧은 설명
+   */
+  shortDescription?: string;
+  /**
+   * 강좌 상세페이지 설명
+   */
+  description?: string;
+  /**
+   * 강좌 썸네일 URL
+   */
+  thumbnailUrl?: string;
+  /**
+   * 강좌 가격(만원 단위)
+   */
+  price: number;
+  /**
+   * 강좌 할인 가격
+   */
+  discountPrice?: number;
+  /**
+   * 강좌 난이도.
+   */
+  level?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+  /**
+   * 강좌 상태. e.g) DRAFT, PUBLISHED, ARCHIVED
+   */
+  status?: "DRAFT" | "PUBLISHED" | "ARCHIVED";
+  /**
+   * 강좌 강사 ID
+   */
+  instructorId: string;
+  sections?: Array<SectionEntityWritable>;
+  lectures?: Array<LectureEntityWritable>;
+  categories?: Array<unknown>;
+  enrollments?: Array<unknown>;
+  reviews?: Array<unknown>;
+  questions?: Array<unknown>;
+};
+
+export type SectionEntityWritable = {
+  /**
+   * 섹션 제목
+   */
+  title: string;
+  /**
+   * 섹션 설명
+   */
+  description?: string;
+  /**
+   * 섹션 순서
+   */
+  order: number;
+  /**
+   * 섹션 코스 ID
+   */
+  courseId: string;
+  /**
+   * 섹션이 포함된 강좌
+   */
+  course?: CourseEntityWritable;
+  /**
+   * 섹션 강의 목록
+   */
+  lectures?: Array<LectureEntityWritable>;
 };
 
 export type CategoryEntityWritable = {
