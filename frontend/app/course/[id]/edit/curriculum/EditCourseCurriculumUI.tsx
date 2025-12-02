@@ -3,14 +3,18 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { CourseEntity, SectionEntity } from "@/generated/openapi-client";
+import {
+  CourseEntity,
+  LectureEntity,
+  SectionEntity,
+} from "@/generated/openapi-client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 import * as api from "@/lib/api";
 import { toast } from "sonner";
 import { notFound } from "next/navigation";
-import { Trash2 } from "lucide-react";
+import { Edit, Lock, LockOpen, Plus, Trash2 } from "lucide-react";
 
 export default function EditCourseCurriculumUI({
   courseProps,
@@ -186,7 +190,69 @@ export default function EditCourseCurriculumUI({
                   </Button>
                 </div>
               </div>
-              <div className="space-y-2 mt-4"></div>
+              <div className="space-y-2 mt-4">
+                {section.lectures?.map(
+                  (lecture: LectureEntity, lectureIdx: number) => (
+                    <div
+                      key={lecture.id}
+                      className="flex items-center justify-between p-2 border rounded-md bg-white"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-500 w-5 text-center">
+                          {lectureIdx + 1}
+                        </span>
+                        <span className="font-medium">{lecture.title}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {/* 미리 보기 icon */}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          // TODO: handleToggleLecturePreview handler 구현하기
+                          onClick={() => {}}
+                          aria-label="미리보기 토글"
+                        >
+                          {lecture.isPreview ? (
+                            <LockOpen className="text-green-600" size={18} />
+                          ) : (
+                            <Lock className="text-gray-400" size={18} />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => {
+                            /* TODO: 강의 수정 모달 오픈 */
+                          }}
+                          aria-label="강의 수정"
+                        >
+                          <Edit size={18} className="text-gray-500" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          // TODO: handleDeleteLecture handler 구현하기
+                          onClick={() => {}}
+                          className="text-red-500 hover:bg-red-100"
+                          aria-label="강의 삭제"
+                        >
+                          <Trash2 size={18} />
+                        </Button>
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+              <div className="mt-3 flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  // TODO: openLectureDialog handler 구현하기
+                  onClick={() => {}}
+                >
+                  <Plus size={16} className="mr-1" /> 수업 추가
+                </Button>
+              </div>
             </div>
           );
         }
