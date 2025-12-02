@@ -33,7 +33,14 @@ export class CoursesService {
   ): Promise<Course | null> {
     return this.prisma.course.findUnique({
       where: { id },
-      include,
+      include: {
+        ...include,
+        sections: {
+          include: {
+            lectures: true,
+          },
+        },
+      },
     });
   }
 
