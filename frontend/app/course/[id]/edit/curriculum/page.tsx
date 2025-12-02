@@ -11,7 +11,7 @@ export default async function EditCourseCurriculumPage({
   const { id } = await params;
   let course: CourseEntity;
 
-  // TODO: 추후 해당 fetching course logic이 동일하게 반복된면 refactoring 진행 필요
+  // TODO: 추후 해당 fetching course logic이 동일하게 반복된면 refactoring 진행 필요 => edit layout에서도 이미 사용됨.
   try {
     const { data } = await api.getCourseById(id);
 
@@ -25,5 +25,5 @@ export default async function EditCourseCurriculumPage({
     notFound();
   }
 
-  return <EditCourseCurriculumUI course={course} />;
+  return <EditCourseCurriculumUI courseProps={course} />;
 }
