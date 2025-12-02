@@ -115,6 +115,27 @@ export default function EditCourseCurriculumUI({
     },
   });
 
+  const toggleLecturePreviewMutation = useMutation({
+    mutationFn: async ({ id, isPreview }: LectureEntity) => {
+      if (!course) {
+        toast.error("강좌를 불러오는데 오류가 발생했습니다.");
+        return;
+      }
+      console.log("isPreview => ", isPreview);
+
+      return await api.updateLecturePreview(id, !isPreview);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["course", courseProps.id],
+      });
+      toast.success("강의 미리보기 상태가 변경되었습니다.");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   // UI handler
   const handleAddSection = () => {
     // section title이 비어있으면 기본 값으로 placeholder 값을 넣어줌
@@ -124,6 +145,10 @@ export default function EditCourseCurriculumUI({
 
   const handleDeleteSection = (sectionId: string) => {
     deleteSectionMutation.mutate(sectionId);
+  };
+
+  const handleToggleLecturePreview = (lecture: LectureEntity) => {
+    toggleLecturePreviewMutation.mutate(lecture);
   };
 
   // * UI rendering logic
@@ -208,8 +233,7 @@ export default function EditCourseCurriculumUI({
                         <Button
                           variant="ghost"
                           size="icon"
-                          // TODO: handleToggleLecturePreview handler 구현하기
-                          onClick={() => {}}
+                          onClick={() => handleToggleLecturePreview(lecture)}
                           aria-label="미리보기 토글"
                         >
                           {lecture.isPreview ? (
