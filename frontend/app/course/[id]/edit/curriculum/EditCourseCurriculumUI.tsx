@@ -1,20 +1,26 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+
+import * as api from "@/lib/api";
 import {
   CourseEntity,
   LectureEntity,
   SectionEntity,
 } from "@/generated/openapi-client";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-
-import * as api from "@/lib/api";
-import { toast } from "sonner";
-import { notFound } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Edit, Lock, LockOpen, Plus, Trash2 } from "lucide-react";
+import {
+  Dialog,
+  DialogFooter,
+  DialogHeader,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function EditCourseCurriculumUI({
   courseProps,
@@ -28,6 +34,13 @@ export default function EditCourseCurriculumUI({
   // 섹션별 임시 섹션 제목 상태
   const [sectionTitles, setSectionTitles] = useState<Record<string, string>>(
     {}
+  );
+  // 강의(lecture) 추가와 연관된 상태
+  const [addLectureTitle, setAddLectureTitle] = useState("");
+  const [lectureDialogOpen, setLectureDialogOpen] = useState(false);
+  // 강의를 추가할 때 sectionId가 필요하며 dialog를 open시 sectionId를 설정
+  const [addLectureSectionId, setAddLectureSectionId] = useState<string | null>(
+    null
   );
 
   // * fetch course by id
@@ -135,7 +148,33 @@ export default function EditCourseCurriculumUI({
     },
   });
 
-  // UI handler
+  const addLectureMutation = useMutation({
+    mutationFn: async ({
+      sectionId,
+      title,
+    }: {
+      sectionId: string;
+      title: string;
+    }) => {
+      if (!course) {
+        toast.error("강좌를 불러오는데 오류가 발생했습니다.");
+        return;
+      }
+
+      return await api.createLecture(sectionId, title);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["course", courseProps.id],
+      });
+      toast.success("강의가 추가되었습니다.");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  // ========================== UI handler ==========================
   const handleAddSection = () => {
     // section title이 비어있으면 기본 값으로 placeholder 값을 넣어줌
     addSectionMutation.mutate(addSectionTitle || "섹션 제목을 작성해주세요.");
@@ -148,6 +187,24 @@ export default function EditCourseCurriculumUI({
 
   const handleToggleLecturePreview = (lecture: LectureEntity) => {
     toggleLecturePreviewMutation.mutate(lecture);
+  };
+  const handleOpenLectureDialog = (sectionId: string) => {
+    setLectureDialogOpen(true);
+    setAddLectureTitle("");
+    setAddLectureSectionId(sectionId);
+  };
+
+  const handleAddLecture = () => {
+    if (!addLectureSectionId && !addLectureTitle.trim()) return;
+
+    addLectureMutation.mutate({
+      sectionId: addLectureSectionId!,
+      title: addLectureTitle,
+    });
+
+    setLectureDialogOpen(false);
+    setAddLectureTitle("");
+    setAddLectureSectionId(null);
   };
 
   // * UI rendering logic
@@ -270,8 +327,7 @@ export default function EditCourseCurriculumUI({
                 <Button
                   variant="outline"
                   size="sm"
-                  // TODO: openLectureDialog handler 구현하기
-                  onClick={() => {}}
+                  onClick={() => handleOpenLectureDialog(section.id)}
                 >
                   <Plus size={16} className="mr-1" /> 수업 추가
                 </Button>
@@ -297,6 +353,32 @@ export default function EditCourseCurriculumUI({
           </Button>
         </div>
       </div>
+
+      {/* 강의(lecture) 추가 dialog */}
+      <Dialog open={lectureDialogOpen} onOpenChange={setLectureDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>수업 추가</DialogTitle>
+          </DialogHeader>
+          <Input
+            value={addLectureTitle}
+            onChange={(e) => setAddLectureTitle(e.target.value)}
+            placeholder="제목을 입력해주세요. (최대 200자)"
+            maxLength={200}
+          />
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setLectureDialogOpen(false)}
+            >
+              취소
+            </Button>
+            <Button onClick={handleAddLecture} variant="default">
+              추가
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
