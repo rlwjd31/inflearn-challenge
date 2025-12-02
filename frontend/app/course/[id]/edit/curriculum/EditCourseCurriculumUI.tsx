@@ -89,6 +89,21 @@ export default function EditCourseCurriculumUI({
         </CardHeader>
       </Card>
 
+      {(course?.sections ?? [])?.map(
+        (section: SectionEntity, sectionIdx: number) => {
+          return (
+            <div key={section.id} className="border rounded-lg p-4 bg-white">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-green-600 font-semibold">
+                  섹션 {sectionIdx + 1}
+                </span>
+             
+              </div>
+            </div>
+          );
+        }
+      )}
+
       {/* 섹션 추가 */}
       <div className="border rounded-lg p-4 bg-gray-50">
         <div className="flex items-center gap-2 mb-2">
