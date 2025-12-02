@@ -115,6 +115,7 @@ export default function EditCourseCurriculumUI({
     },
   });
 
+  // @FIXME: isPreview가 false로 일관된 값을 가짐 -> !isPreview로 true로 값이 back으로 넘어가는 것을 확인
   const toggleLecturePreviewMutation = useMutation({
     mutationFn: async ({ id, isPreview }: LectureEntity) => {
       if (!course) {
