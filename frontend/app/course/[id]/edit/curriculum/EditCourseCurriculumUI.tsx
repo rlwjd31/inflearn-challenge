@@ -10,6 +10,7 @@ import { useState } from "react";
 import * as api from "@/lib/api";
 import { toast } from "sonner";
 import { notFound } from "next/navigation";
+import { Trash2 } from "lucide-react";
 
 export default function EditCourseCurriculumUI({
   courseProps,
@@ -20,6 +21,10 @@ export default function EditCourseCurriculumUI({
 
   // 섹션 추가 상태
   const [addSectionTitle, setAddSectionTitle] = useState("");
+  // 섹션별 임시 섹션 제목 상태
+  const [sectionTitles, setSectionTitles] = useState<Record<string, string>>(
+    {}
+  );
 
   // * fetch course by id
   // 상위 component는 server component이므로 course를 props로 받지만 course의 정보가 바뀌면 re-rendering이 되지 않아 어차피 useQuery를 사용해야 한다.
@@ -53,6 +58,32 @@ export default function EditCourseCurriculumUI({
         queryKey: ["course", courseProps.id],
       });
       toast.success("섹션이 추가되었습니다.");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const updateSectionTitleMutation = useMutation({
+    mutationFn: async ({
+      sectionId,
+      title,
+    }: {
+      sectionId: string;
+      title: string;
+    }) => {
+      if (!course) {
+        toast.error("강좌를 불러오는데 오류가 발생했습니다.");
+        return;
+      }
+
+      return await api.updateSectionTitle(sectionId, title);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["course", courseProps.id],
+      });
+      toast.success("섹션 제목이 수정되었습니다.");
     },
     onError: (error) => {
       toast.error(error.message);
@@ -94,10 +125,31 @@ export default function EditCourseCurriculumUI({
           return (
             <div key={section.id} className="border rounded-lg p-4 bg-white">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-green-600 font-semibold">
-                  섹션 {sectionIdx + 1}
-                </span>
-             
+                <div className="flex items-center gap-2">
+                  <span className="text-green-600 font-semibold">
+                    섹션 {sectionIdx + 1}
+                  </span>
+                  <Input
+                    className="w-64"
+                    value={sectionTitles[section.id] ?? section.title}
+                    onChange={(e) => {
+                      setSectionTitles((prev) => ({
+                        ...prev,
+                        [section.id]: e.target.value,
+                      }));
+                    }}
+                    onBlur={(e) => {
+                      const newTitle = e.target.value.trim();
+                      if (newTitle && newTitle !== section.title) {
+                        updateSectionTitleMutation.mutate({
+                          sectionId: section.id,
+                          title: newTitle,
+                        });
+                      }
+                    }}
+                    placeholder="섹션 제목을 작성해주세요."
+                  />
+                </div>
               </div>
             </div>
           );
