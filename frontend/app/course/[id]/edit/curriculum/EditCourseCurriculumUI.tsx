@@ -174,6 +174,26 @@ export default function EditCourseCurriculumUI({
     },
   });
 
+  const deleteLectureMutation = useMutation({
+    mutationFn: async (lectureId: string) => {
+      if (!course) {
+        toast.error("강좌를 불러오는데 오류가 발생했습니다.");
+        return;
+      }
+
+      return await api.deleteLecture(lectureId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["course", courseProps.id],
+      });
+      toast.success("강의가 삭제되었습니다.");
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
   // ========================== UI handler ==========================
   const handleAddSection = () => {
     // section title이 비어있으면 기본 값으로 placeholder 값을 넣어줌
@@ -188,6 +208,7 @@ export default function EditCourseCurriculumUI({
   const handleToggleLecturePreview = (lecture: LectureEntity) => {
     toggleLecturePreviewMutation.mutate(lecture);
   };
+
   const handleOpenLectureDialog = (sectionId: string) => {
     setLectureDialogOpen(true);
     setAddLectureTitle("");
@@ -207,10 +228,12 @@ export default function EditCourseCurriculumUI({
     setAddLectureSectionId(null);
   };
 
-  // * UI rendering logic
-  if (courseFetchLoading) {
-    return;
-  }
+  const handleDeleteLecture = (lectureId: string) => {
+    deleteLectureMutation.mutate(lectureId);
+  };
+
+  // * UI rendering logic -> 강의 정보는 fetching하는데 매우 빠름.
+  if (courseFetchLoading) return;
 
   if (courseFetchError) {
     return <div>Error: {courseFetchError.message}</div>;
@@ -311,8 +334,7 @@ export default function EditCourseCurriculumUI({
                         <Button
                           variant="ghost"
                           size="icon"
-                          // TODO: handleDeleteLecture handler 구현하기
-                          onClick={() => {}}
+                          onClick={() => handleDeleteLecture(lecture.id)}
                           className="text-red-500 hover:bg-red-100"
                           aria-label="강의 삭제"
                         >
