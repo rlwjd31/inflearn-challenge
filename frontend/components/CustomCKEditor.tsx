@@ -64,6 +64,7 @@ export default function CustomCKEditor({
             config={{
               licenseKey: "GPL",
               plugins: [
+                // @FIXME: heading tag의 스타일이 적용되지 않음.
                 Heading,
                 Essentials,
                 Paragraph,
