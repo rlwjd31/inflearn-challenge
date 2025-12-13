@@ -1,4 +1,6 @@
 import EditCourseCurriculumUI from "@/app/course/[id]/edit/curriculum/EditCourseCurriculumUI";
+import ClientSideCustomEditor from "@/components/ClientCustomCKEditor";
+
 import { CourseEntity } from "@/generated/openapi-client";
 import * as api from "@/lib/api";
 import { notFound } from "next/navigation";
@@ -25,5 +27,10 @@ export default async function EditCourseCurriculumPage({
     notFound();
   }
 
-  return <EditCourseCurriculumUI courseProps={course} />;
+  return (
+    <div className="flex flex-col gap-12">
+      <EditCourseCurriculumUI courseProps={course} />
+      <ClientSideCustomEditor />
+    </div>
+  );
 }
