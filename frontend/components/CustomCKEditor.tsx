@@ -16,6 +16,7 @@ import {
   Table,
   Italic,
   EventInfo,
+  Autoformat,
 } from "ckeditor5";
 
 import "ckeditor5/ckeditor5.css";
@@ -66,6 +67,7 @@ export default function CustomCKEditor({
                 Heading,
                 Essentials,
                 Paragraph,
+                Autoformat,
                 Bold,
                 Italic,
                 Link,
