@@ -61,6 +61,7 @@ export class LectureEntity implements NullableToUndefined<Lecture> {
     example: {
       url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     },
+    additionalProperties: true,
     required: false,
   })
   videoStorageInfo?: Record<string, any>;
