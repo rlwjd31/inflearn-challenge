@@ -21,7 +21,7 @@ import {
 import type { Request as ExpressRequest } from 'express';
 
 import { LecturesService } from './lectures.service';
-import { JWTAccessTokenGuard } from 'src/ auth/guards/jwt-access-token.guard';
+import { JWTAccessTokenGuard } from 'src/auth/guards/jwt-access-token.guard';
 import { LectureEntity } from 'src/lectures/entities/lecture.entity';
 import { CreateLectureDTO } from 'src/lectures/dto/create-lecture.dto';
 import { UpdateLectureDTO } from 'src/lectures/dto/update-lecture.dto';

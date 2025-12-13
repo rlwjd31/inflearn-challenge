@@ -1,6 +1,6 @@
 import { Controller, Get, Request, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
-import { JWTAccessTokenGuard } from 'src/ auth/guards/jwt-access-token.guard';
+import { JWTAccessTokenGuard } from 'src/auth/guards/jwt-access-token.guard';
 import type { Request as ExpressRequest } from 'express';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
