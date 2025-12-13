@@ -120,3 +120,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* ckeditor */
+.ck-content h1 {
+  font-size: 2rem; /* 32px (기본 16px 기준) */
+  font-weight: 800;
+  margin: 0.67rem 0;
+}
+
+.ck-content h2 {
+  font-size: 1.5rem; /* 24px */
+  font-weight: 800;
+  margin: 0.75rem 0;
+}
+
+.ck-content h3 {
+  font-size: 1.25rem; /* 20px - 더 크게 */
+  font-weight: 800; /* 더 두껍게 */
+  margin: 0.75rem 0;
+}
+
+.ck-content p {
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+}
