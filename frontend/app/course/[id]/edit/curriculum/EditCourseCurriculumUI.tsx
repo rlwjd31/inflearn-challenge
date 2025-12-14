@@ -21,6 +21,7 @@ import {
   DialogContent,
   DialogTitle,
 } from "@/components/ui/dialog";
+import EditLectureDialog from "@/app/course/[id]/edit/curriculum/_components/Dialog";
 
 export default function EditCourseCurriculumUI({
   courseProps,
@@ -42,6 +43,9 @@ export default function EditCourseCurriculumUI({
   const [addLectureSectionId, setAddLectureSectionId] = useState<string | null>(
     null
   );
+
+  const [editLecture, setEditLecture] = useState<LectureEntity | null>(null);
+  const [isEditLectureDialogOpen, setIsEditLectureDialogOpen] = useState(false);
 
   // * fetch course by id
   // 상위 component는 server component이므로 course를 props로 받지만 course의 정보가 바뀌면 re-rendering이 되지 않아 어차피 useQuery를 사용해야 한다.
@@ -244,123 +248,138 @@ export default function EditCourseCurriculumUI({
   }
 
   return (
-    <div className="space-y-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            <h1 className="text-2xl font-bold">커리큘럼</h1>
-          </CardTitle>
-        </CardHeader>
-      </Card>
+    <>
+      <div className="space-y-8 flex flex-col items-center">
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle>
+              <h1 className="text-2xl font-bold">커리큘럼</h1>
+            </CardTitle>
+          </CardHeader>
+        </Card>
 
-      {(course?.sections ?? [])?.map(
-        (section: SectionEntity, sectionIdx: number) => {
-          return (
-            <div key={section.id} className="border rounded-lg p-4 bg-white">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-green-600 font-semibold">
-                    섹션 {sectionIdx + 1}
-                  </span>
-                  <Input
-                    className="w-64"
-                    value={sectionTitles[section.id] ?? section.title}
-                    onChange={(e) => {
-                      setSectionTitles((prev) => ({
-                        ...prev,
-                        [section.id]: e.target.value,
-                      }));
-                    }}
-                    onBlur={(e) => {
-                      const newTitle = e.target.value.trim();
-                      if (newTitle && newTitle !== section.title) {
-                        updateSectionTitleMutation.mutate({
-                          sectionId: section.id,
-                          title: newTitle,
-                        });
-                      }
-                    }}
-                    placeholder="섹션 제목을 작성해주세요."
-                  />
+        {(course?.sections ?? [])?.map(
+          (section: SectionEntity, sectionIdx: number) => {
+            return (
+              <div
+                key={section.id}
+                className="border rounded-lg p-4 bg-white w-full"
+              >
+                {/* 섹션 */}
+                <div className="flex items-center justify-between mb-2 ">
+                  <div className="flex items-center gap-2">
+                    <span className="text-green-600 font-semibold">
+                      섹션 {sectionIdx + 1}
+                    </span>
+                    <Input
+                      className="w-64"
+                      value={sectionTitles[section.id] ?? section.title}
+                      onChange={(e) => {
+                        setSectionTitles((prev) => ({
+                          ...prev,
+                          [section.id]: e.target.value,
+                        }));
+                      }}
+                      onBlur={(e) => {
+                        const newTitle = e.target.value.trim();
+                        if (newTitle && newTitle !== section.title) {
+                          updateSectionTitleMutation.mutate({
+                            sectionId: section.id,
+                            title: newTitle,
+                          });
+                        }
+                      }}
+                      placeholder="섹션 제목을 작성해주세요."
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDeleteSection(section.id)}
+                      className="text-red-500 hover:bg-red-100"
+                    >
+                      <Trash2 size={18} />
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
+                {/* 강의 리스트 */}
+                <div className="space-y-2 mt-4">
+                  {section.lectures?.map(
+                    (lecture: LectureEntity, lectureIdx: number) => (
+                      <div
+                        key={lecture.id}
+                        className="flex items-center justify-between p-2 border rounded-md bg-white"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-500 w-5 text-center">
+                            {lectureIdx + 1}
+                          </span>
+                          <span className="font-medium">{lecture.title}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {/* 미리 보기 icon */}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleToggleLecturePreview(lecture)}
+                            aria-label="미리보기 토글"
+                          >
+                            {lecture.isPreview ? (
+                              <LockOpen className="text-green-600" size={18} />
+                            ) : (
+                              <Lock className="text-gray-400" size={18} />
+                            )}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              console.log(
+                                "lecture modify button is clicked!!!"
+                              );
+                              console.log(
+                                "isEditLectureDialogOpen",
+                                isEditLectureDialogOpen
+                              );
+                              setEditLecture(lecture);
+                              setIsEditLectureDialogOpen(true);
+                            }}
+                            aria-label="강의 수정"
+                          >
+                            <Edit size={18} className="text-gray-500" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDeleteLecture(lecture.id)}
+                            className="text-red-500 hover:bg-red-100"
+                            aria-label="강의 삭제"
+                          >
+                            <Trash2 size={18} />
+                          </Button>
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+                <div className="mt-3 flex gap-2 w-full justify-center">
                   <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDeleteSection(section.id)}
-                    className="text-red-500 hover:bg-red-100"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleOpenLectureDialog(section.id)}
+                    className="bg-gray-50"
                   >
-                    <Trash2 size={18} />
+                    <Plus size={16} className="mr-1" /> 수업 추가
                   </Button>
                 </div>
               </div>
-              <div className="space-y-2 mt-4">
-                {section.lectures?.map(
-                  (lecture: LectureEntity, lectureIdx: number) => (
-                    <div
-                      key={lecture.id}
-                      className="flex items-center justify-between p-2 border rounded-md bg-white"
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-500 w-5 text-center">
-                          {lectureIdx + 1}
-                        </span>
-                        <span className="font-medium">{lecture.title}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {/* 미리 보기 icon */}
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleToggleLecturePreview(lecture)}
-                          aria-label="미리보기 토글"
-                        >
-                          {lecture.isPreview ? (
-                            <LockOpen className="text-green-600" size={18} />
-                          ) : (
-                            <Lock className="text-gray-400" size={18} />
-                          )}
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => {
-                            /* TODO: 강의 수정 모달 오픈 */
-                          }}
-                          aria-label="강의 수정"
-                        >
-                          <Edit size={18} className="text-gray-500" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDeleteLecture(lecture.id)}
-                          className="text-red-500 hover:bg-red-100"
-                          aria-label="강의 삭제"
-                        >
-                          <Trash2 size={18} />
-                        </Button>
-                      </div>
-                    </div>
-                  )
-                )}
-              </div>
-              <div className="mt-3 flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleOpenLectureDialog(section.id)}
-                >
-                  <Plus size={16} className="mr-1" /> 수업 추가
-                </Button>
-              </div>
-            </div>
-          );
-        }
-      )}
+            );
+          }
+        )}
 
-      {/* 섹션 추가 */}
-      <div className="border rounded-lg p-4 bg-gray-50">
+        {/* 섹션 추가 */}
+        {/* <div className="border rounded-lg p-4 bg-gray-50">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-green-600 font-semibold">섹션 추가</span>
           <Input
@@ -374,33 +393,53 @@ export default function EditCourseCurriculumUI({
             추가
           </Button>
         </div>
-      </div>
+      </div> */}
+        <Button
+          onClick={handleAddSection}
+          variant="default"
+          size="lg"
+          className="mx-auto text-shadow-md font-bold"
+        >
+          섹션 추가
+        </Button>
 
-      {/* 강의(lecture) 추가 dialog */}
-      <Dialog open={lectureDialogOpen} onOpenChange={setLectureDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>수업 추가</DialogTitle>
-          </DialogHeader>
-          <Input
-            value={addLectureTitle}
-            onChange={(e) => setAddLectureTitle(e.target.value)}
-            placeholder="제목을 입력해주세요. (최대 200자)"
-            maxLength={200}
-          />
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setLectureDialogOpen(false)}
-            >
-              취소
-            </Button>
-            <Button onClick={handleAddLecture} variant="default">
-              추가
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+        {/* 강의(lecture) 추가 dialog */}
+        <Dialog open={lectureDialogOpen} onOpenChange={setLectureDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>수업 추가</DialogTitle>
+            </DialogHeader>
+            <Input
+              value={addLectureTitle}
+              onChange={(e) => setAddLectureTitle(e.target.value)}
+              placeholder="제목을 입력해주세요. (최대 200자)"
+              maxLength={200}
+            />
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setLectureDialogOpen(false)}
+              >
+                취소
+              </Button>
+              <Button onClick={handleAddLecture} variant="default">
+                추가
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+      {/* 강의 수정 Dialog */}
+      {editLecture && (
+        <EditLectureDialog
+          isOpen={isEditLectureDialogOpen}
+          onClose={() => {
+            setIsEditLectureDialogOpen(false);
+            setEditLecture(null);
+          }}
+          lecture={editLecture}
+        />
+      )}
+    </>
   );
 }
