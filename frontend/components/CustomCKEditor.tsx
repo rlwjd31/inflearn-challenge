@@ -48,7 +48,7 @@ export default function CustomCKEditor({
 
   const handleOnChange = (event: EventInfo, editor: ClassicEditor) => {
     const data = editor.getData();
-    // onChange(data);
+    onChange(data);
   };
 
   return (

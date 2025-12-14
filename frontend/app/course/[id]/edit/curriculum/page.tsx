@@ -1,3 +1,5 @@
+import EditLectureDialog from "@/app/course/[id]/edit/curriculum/_components/Dialog";
+import TestDialog from "@/app/course/[id]/edit/curriculum/_components/TestDialog";
 import EditCourseCurriculumUI from "@/app/course/[id]/edit/curriculum/EditCourseCurriculumUI";
 import ClientSideCustomEditor from "@/components/ClientCustomCKEditor";
 
@@ -31,6 +33,7 @@ export default async function EditCourseCurriculumPage({
     <div className="flex flex-col gap-12">
       <EditCourseCurriculumUI courseProps={course} />
       <ClientSideCustomEditor />
+      <TestDialog lecture={course.lectures[0]} />
     </div>
   );
 }
