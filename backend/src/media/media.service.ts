@@ -32,7 +32,7 @@ export class MediaService {
 
     // video storage field
     return {
-      fileName: file.originalname,
+      fileName: Buffer.from(file.originalname, 'latin1').toString('utf-8'),
       storageType: 's3',
       s3: {
         bucket: process.env.AWS_MEDIA_S3_BUCKET_NAME,
