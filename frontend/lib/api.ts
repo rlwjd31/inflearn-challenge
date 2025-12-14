@@ -9,10 +9,12 @@ import {
   lecturesControllerCreate,
   lecturesControllerDelete,
   lecturesControllerUpdate,
+  mediaControllerUploadFile,
   sectionsControllerCreate,
   sectionsControllerDelete,
   sectionsControllerUpdate,
   UpdateCourseDto,
+  UpdateLectureDto,
 } from "@/generated/openapi-client";
 
 type ApiError = {
@@ -162,4 +164,20 @@ export const deleteLecture = async (lectureId: string) => {
   }
 
   return { data: lecture };
+};
+
+export const updateLecture = async (
+  lectureId: string,
+  updateLectureDto: UpdateLectureDto
+) => {
+  const { data, error } = await lecturesControllerUpdate({
+    path: { lectureId },
+    body: updateLectureDto,
+  });
+
+  if (error) {
+    throwApiError(error as ApiError);
+  }
+
+  return { data };
 };
