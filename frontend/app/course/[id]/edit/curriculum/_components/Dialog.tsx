@@ -55,6 +55,7 @@ export default function EditLectureDialog({
     const file = acceptedFiles[0];
     if (file) {
       try {
+        // @FIXME: api response의 filename이 encoding 이 깨져서 들어옴
         const { data } = await api.uploadMedia(file);
 
         if (!data) {
