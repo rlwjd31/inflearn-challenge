@@ -103,80 +103,85 @@ export default function EditLectureDialog({
     editLectureMutation.mutate(lectureForm);
   };
 
+  console.log(lectureForm);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[700px]">
         <DialogHeader>
           <DialogTitle>강의 수정</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="title">제목</Label>
-            <Input
-              id="title"
-              value={lectureForm.title}
-              onChange={(e) =>
-                setLectureForm((prev) => ({ ...prev, title: e.target.value }))
-              }
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>강의 영상</Label>
-            {/* 업로드 된 강의 미리보기 */}
-            {lectureForm.videoStorageInfo && (
-              <div className="w-full h-auto min-h-[200px]">
-                <video
-                  autoPlay={true}
-                  controls={true}
-                  src={lectureForm.videoStorageInfo.cloudFront.url}
-                />
-              </div>
-            )}
+        {lecture && (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">제목</Label>
+              <Input
+                id="title"
+                value={lectureForm.title}
+                onChange={(e) =>
+                  setLectureForm((prev) => ({ ...prev, title: e.target.value }))
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>강의 영상</Label>
+              {/* 업로드 된 강의 미리보기 */}
+              {lectureForm.videoStorageInfo && (
+                <div className="w-full h-auto min-h-[200px]">
+                  <video
+                    autoPlay={true}
+                    controls={true}
+                    src={lectureForm.videoStorageInfo.s3?.cloudFront?.url}
+                  />
+                </div>
+              )}
 
-            {/* 권장 영상 형식 안내 */}
-            <p className="text-sm text-gray-500 mb-2">
-              • 최대 파일 크기: 5GB
-              <br />
-              • 지원 형식: .mp4, .mkv, .m4v, .mov
-              <br />• 최소 해상도: 1080p 이상 (권장)
-            </p>
-            <div
-              {...getRootProps()}
-              className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer ${
-                isDragActive ? "border-primary" : "border-gray-300"
-              }`}
-            >
-              <input {...getInputProps()} />
-              <div className="py-8">
-                <FileVideo className="w-12 h-12 mx-auto mb-4 text-gray-400" />
-                <p className="text-sm text-gray-600">
-                  {lectureForm.videoStorageInfo
-                    ? `선택된 파일: ${lectureForm.videoStorageInfo.fileName}`
-                    : isDragActive
-                    ? "파일을 여기에 놓아주세요"
-                    : "클릭하거나 파일을 드래그하여 업로드하세요"}
-                </p>
+              {/* 권장 영상 형식 안내 */}
+              <p className="text-sm text-gray-500 mb-2">
+                • 최대 파일 크기: 5GB
+                <br />
+                • 지원 형식: .mp4, .mkv, .m4v, .mov
+                <br />• 최소 해상도: 1080p 이상 (권장)
+              </p>
+              <div
+                {...getRootProps()}
+                className={`border-2 border-dashed rounded-lg p-4 text-center cursor-pointer ${
+                  isDragActive ? "border-primary" : "border-gray-300"
+                }`}
+              >
+                <input {...getInputProps()} />
+                <div className="py-8">
+                  <FileVideo className="w-12 h-12 mx-auto mb-4 text-gray-400" />
+                  <p className="text-sm text-gray-600">
+                    {lectureForm.videoStorageInfo
+                      ? `선택된 파일: ${lectureForm.videoStorageInfo.fileName}`
+                      : isDragActive
+                      ? "파일을 여기에 놓아주세요"
+                      : "클릭하거나 파일을 드래그하여 업로드하세요"}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="note">수업 노트</Label>
-            <ClientSideCustomEditor
-              value={lectureForm.description}
-              onChange={(value) =>
-                setLectureForm((prev) => ({ ...prev, description: value }))
-              }
-            />
-          </div>
-          <div className="flex justify-end space-x-2">
-            <Button variant="outline" type="button" onClick={onClose}>
-              취소
-            </Button>
-            <Button type="submit" disabled={editLectureMutation.isPending}>
-              {editLectureMutation.isPending ? "수정 중..." : "수정"}
-            </Button>
-          </div>
-        </form>
+            <div className="space-y-2">
+              <Label htmlFor="note">수업 노트</Label>
+              <ClientSideCustomEditor
+                value={lectureForm.description}
+                onChange={(value) =>
+                  setLectureForm((prev) => ({ ...prev, description: value }))
+                }
+              />
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" type="button" onClick={onClose}>
+                취소
+              </Button>
+              <Button type="submit" disabled={editLectureMutation.isPending}>
+                {editLectureMutation.isPending ? "수정 중..." : "수정"}
+              </Button>
+            </div>
+          </form>
+        )}
+        {!lecture && <div>강의 정보를 불러올 수 없습니다.</div>}
       </DialogContent>
     </Dialog>
   );
