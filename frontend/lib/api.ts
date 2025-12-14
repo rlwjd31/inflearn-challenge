@@ -181,3 +181,17 @@ export const updateLecture = async (
 
   return { data };
 };
+
+export const uploadMedia = async (file: File) => {
+  const { data, error } = await mediaControllerUploadFile({
+    body: {
+      file,
+    },
+  });
+
+  if (error) {
+    throwApiError(error as ApiError);
+  }
+
+  return { data };
+};
