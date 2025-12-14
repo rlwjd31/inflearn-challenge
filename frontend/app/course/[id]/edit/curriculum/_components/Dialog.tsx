@@ -77,7 +77,6 @@ export default function EditLectureDialog({
     onDrop,
     accept: ACCEPTED_VIDEO_TYPES,
     maxFiles: 1,
-    // @FIXME: 300mb로 설정되었지만 1mb이상 파일은 업로드 불가 error가 발생
     maxSize: MAX_FILE_SIZE,
   });
 
