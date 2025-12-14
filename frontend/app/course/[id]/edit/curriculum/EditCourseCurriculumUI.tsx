@@ -335,13 +335,6 @@ export default function EditCourseCurriculumUI({
                             variant="ghost"
                             size="icon"
                             onClick={() => {
-                              console.log(
-                                "lecture modify button is clicked!!!"
-                              );
-                              console.log(
-                                "isEditLectureDialogOpen",
-                                isEditLectureDialogOpen
-                              );
                               setEditLecture(lecture);
                               setIsEditLectureDialogOpen(true);
                             }}

@@ -96,7 +96,6 @@ export default function CustomCKEditor({
                 "undo",
                 "redo",
               ],
-              initialData: "<p>Hello from CKEditor 5 in React!</p>",
             }}
           />
         )}

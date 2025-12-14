@@ -103,8 +103,6 @@ export default function EditLectureDialog({
     editLectureMutation.mutate(lectureForm);
   };
 
-  console.log(lectureForm);
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[700px]">
@@ -131,6 +129,7 @@ export default function EditLectureDialog({
                   <video
                     autoPlay={true}
                     controls={true}
+                    // * cloudfront는 streaming을 지원한다.
                     src={lectureForm.videoStorageInfo.s3?.cloudFront?.url}
                   />
                 </div>
