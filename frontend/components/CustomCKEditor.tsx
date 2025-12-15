@@ -52,7 +52,7 @@ export default function CustomCKEditor({
   };
 
   return (
-    <div className="ck-editor-container">
+    <div className="prose ck-editor-container">
       <div ref={editorToolbarRef} className="min-h-[300px] border rounded">
         {!isMounted && <p>Loading editor...</p>}
         {isMounted && (
