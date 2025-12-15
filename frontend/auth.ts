@@ -120,8 +120,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   callbacks: {
     signIn: async (params) => {
-      console.log("below is user Info after kakao oauth");
-      console.log({ params });
+      // console.log("below is user Info after kakao oauth");
+      // console.log({ params });
       return true;
     },
 
