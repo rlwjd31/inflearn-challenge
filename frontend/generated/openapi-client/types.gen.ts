@@ -176,7 +176,7 @@ export type UpdateCourseDto = {
     /**
      * 강좌 제목
      */
-    title: string;
+    title?: string;
     /**
      * 강좌 1~2줄 짧은 설명
      */
@@ -192,7 +192,7 @@ export type UpdateCourseDto = {
     /**
      * 강좌 가격(만원 단위)
      */
-    price: number;
+    price?: number;
     /**
      * 강좌 할인 가격
      */

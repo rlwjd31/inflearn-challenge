@@ -1,4 +1,4 @@
-import { ApiProperty, PickType } from '@nestjs/swagger';
+import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsArray,
@@ -14,18 +14,21 @@ import {
   CourseStatus,
 } from 'src/courses/entities/course.entity';
 
-class UpdateCourseDTOType extends PickType(CourseEntity, [
-  'title',
-  'shortDescription',
-  'description',
-  'thumbnailUrl',
-  'price',
-  'discountPrice',
-  'level',
-  'status',
-]) {}
+class UpdateCourseDTOType extends PartialType(
+  PickType(CourseEntity, [
+    'title',
+    'shortDescription',
+    'description',
+    'thumbnailUrl',
+    'price',
+    'discountPrice',
+    'level',
+    'status',
+  ]),
+) {}
 export class UpdateCourseDTO extends UpdateCourseDTOType {
   @IsString()
+  @IsOptional()
   title: string;
 
   @IsString()
