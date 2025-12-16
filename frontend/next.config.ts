@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "300mb",
     },
   },
+  images: {
+    remotePatterns: [
+      new URL(`https://${process.env.AWS_CLOUDFRONT_DOMAIN}/**`),
+    ],
+  },
 };
 
 export default nextConfig;
