@@ -61,6 +61,7 @@ export class LectureEntity implements NullableToUndefined<Lecture> {
     example: {
       url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
     },
+    additionalProperties: true,
     required: false,
   })
   videoStorageInfo?: Record<string, any>;
@@ -101,14 +102,14 @@ export class LectureEntity implements NullableToUndefined<Lecture> {
   // * relations
   @ApiProperty({
     description: '강의가 포함된 강좌',
-    type: CourseEntity,
+    type: () => CourseEntity,
     required: false,
   })
   course?: CourseEntity;
 
   @ApiProperty({
     description: '강의가 포함된 섹션',
-    type: SectionEntity,
+    type: () => SectionEntity,
     required: false,
   })
   section?: SectionEntity;

@@ -5,10 +5,10 @@ import {
   CourseEnrollment,
   CourseQuestion,
   CourseReview,
-  Lecture,
-  Section,
 } from '@prisma/client';
 
+import { LectureEntity } from 'src/lectures/entities/lecture.entity';
+import { SectionEntity } from 'src/sections/entities/section.entity';
 import { NullableToUndefined } from 'src/types/nullable-to-undefined-util.type';
 
 export enum CourseLevel {
@@ -130,19 +130,17 @@ export class CourseEntity implements NullableToUndefined<Course> {
   // * relations
   @ApiProperty({
     isArray: true,
-    // TODO: have to convert Object type to like () => SectionDTO after defined Section
-    // TODO: same as lectures, categories, enrollments, reviews, questions
-    type: Object,
+    type: () => SectionEntity,
     required: false,
   })
-  sections?: Section[];
+  sections?: SectionEntity[];
 
   @ApiProperty({
     isArray: true,
-    type: Object,
+    type: () => LectureEntity,
     required: false,
   })
-  lectures?: Lecture[];
+  lectures?: LectureEntity[];
 
   @ApiProperty({
     isArray: true,

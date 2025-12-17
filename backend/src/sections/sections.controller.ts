@@ -11,7 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { SectionsService } from './sections.service';
-import { JWTAccessTokenGuard } from 'src/ auth/guards/jwt-access-token.guard';
+import { JWTAccessTokenGuard } from 'src/auth/guards/jwt-access-token.guard';
 import {
   ApiBearerAuth,
   ApiBody,
