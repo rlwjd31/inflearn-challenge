@@ -1,100 +1,197 @@
 "use server";
 
+import {
+  categoriesControllerFindAll,
+  coursesControllerCreate,
+  coursesControllerFindAll,
+  coursesControllerFindOne,
+  coursesControllerUpdate,
+  lecturesControllerCreate,
+  lecturesControllerDelete,
+  lecturesControllerUpdate,
+  mediaControllerUploadFile,
+  sectionsControllerCreate,
+  sectionsControllerDelete,
+  sectionsControllerUpdate,
+  UpdateCourseDto,
+  UpdateLectureDto,
+} from "@/generated/openapi-client";
 
-import { appControllerTestUser } from "@/generated/openapi-client";
+type ApiError = {
+  statusCode: number;
+  message: string;
+};
 
+const throwApiError = (error: ApiError) => {
+  throw new Error(`${error.statusCode}: ${error.message}`);
+};
 
-// ✅ with openapi ts
-export async function getUserTest(token?: string) {
-  const { data, error } = await appControllerTestUser();
+export const getAllCategories = async () => {
+  const { data, error } = await categoriesControllerFindAll();
 
-  // * 해당 함수에서 error처리를 하려 했으나 받는 client에서 react-query에서 처리하기 위해 error를 반환하도록 구현함.
+  return {
+    data,
+    error,
+  };
+};
+
+export const getAllInstructorCourses = async () => {
+  const { data, error } = await coursesControllerFindAll();
+
   return { data, error };
-}
+};
 
+export const createCourse = async (title: string) => {
+  const { data, error } = await coursesControllerCreate({
+    body: {
+      title,
+    },
+  });
 
+  if (error) {
+    throwApiError(error as ApiError);
+  }
 
-// ============== 코드 참고용 ==============
-// import { cookies } from "next/headers";
-// import { getCookie } from "cookies-next/server";
+  return {
+    data,
+  };
+};
 
-// const AUTH_COOKIE_NAME =
-//   process.env.NODE_ENV === "production"
-//     ? "__Secure-authjs.session-token"
-//     : "authjs.session-token";
+export const getCourseById = async (id: string, include?: string) => {
+  const { data, error } = await coursesControllerFindOne({
+    path: { id },
+    query: {
+      include: include ?? "sections,lectures",
+    },
+  });
 
-// const API_URL =
-//   process.env.NODE_ENV === "production"
-//     ? process.env.PRODUCTION_API_URL
-//     : process.env.DEVELOPMENT_API_URL;
+  if (error) {
+    throwApiError(error as ApiError);
+  }
 
-// async function fetchApi<T>(
-//   endpoint: string,
-//   options: RequestInit = {},
-//   token?: string
-// ) {
-//   const headers = {
-//     "Content-Type": "application/json",
-//     ...(options.headers || {}),
-//   } as Record<string, string>;
+  return { data };
+};
 
-//   if (token) {
-//     headers["Authorization"] = `Bearer ${token}`;
-//   }
+export const updateCourse = async (id: string, data: UpdateCourseDto) => {
+  const { data: course, error } = await coursesControllerUpdate({
+    path: { id },
+    body: data,
+  });
 
-//   const config: RequestInit = {
-//     ...options,
-//     headers,
-//     // ? 15부터 fetch에 의해 기본적인 caching은 지원하지 않음
-//     // ? reference => https://nextjs.org/docs/15/app/guides/upgrading/version-15#fetch-requests
-//     // ? 일단은 혹시 모르니 no-store로 caching을 하지 않고 react-query에서 caching을 진행함
-//     cache: "no-store",
-//   };
+  if (error) {
+    throwApiError(error as ApiError);
+  }
 
-//   // body에 객체와 같은 형태로 올때 -> json
-//   // 직렬화시 에러가 발생할 수 있음
-//   try {
-//     if (options.body && typeof options.body !== "string") {
-//       config.body = JSON.stringify(options.body);
-//     }
-//   } catch (error) {
-//     const errorMessage = "❌ error occurred while serializing body ->".concat(
-//       error instanceof Error ? error.message : ""
-//     );
-//     console.error(errorMessage);
-//     throw new Error(errorMessage);
-//   }
+  return { data: course };
+};
 
-//   const response = await fetch(`${API_URL}${endpoint}`, config);
+// * ==================== CRUD Operation of section apis ====================
+export const createSection = async (courseId: string, title: string) => {
+  const { data: section, error } = await sectionsControllerCreate({
+    path: { courseId },
+    body: { title },
+  });
 
-//   if (!response.ok) {
-//     throw new Error(`❌ API 요청 실패, status code: ${response.status}`);
-//   }
+  if (error) {
+    throwApiError(error as ApiError);
+  }
 
-//   // * 값이 비어있거나 json이 아닐경우
-//   // * HTTP 204 No Content는 성공했지만 응답 본문이 없는 경우
-//   // * - DELETE 요청 성공 시
-//   // * - PUT/PATCH 요청으로 업데이트 성공 시 (업데이트된 리소스를 반환하지 않을 때)
-//   // * - OPTIONS 요청 (CORS preflight)
-//   if (response.status === 204) {
-//     return {} as T;
-//   }
+  return { data: section };
+};
 
-//   const contentType = response.headers.get("Content-Type");
-//   if (contentType && contentType.includes("application/json")) {
-//     return response.json() as Promise<T>;
-//   } else {
-//     return response.text() as Promise<T>;
-//   }
-// }
+export const updateSectionTitle = async (sectionId: string, title: string) => {
+  const { data: section, error } = await sectionsControllerUpdate({
+    path: { sectionId },
+    body: { title },
+  });
 
+  if (error) {
+    throwApiError(error as ApiError);
+  }
 
-// export async function getUserTest(token?: string) {
-//   // 서버 컴포넌트에서 호출된 경우
-//   if (!token && typeof window === "undefined") {
-//     // server component에서 cookie를 가져옴 -> cookies-next/server
-//     token = await getCookie(AUTH_COOKIE_NAME, { cookies });
-//   }
+  return { data: section };
+};
 
-//   return fetchApi<string>("/user-test", {}, token);
-// }
+export const deleteSection = async (sectionId: string) => {
+  const { data: section, error } = await sectionsControllerDelete({
+    path: { sectionId },
+  });
+
+  if (error) {
+    throwApiError(error as ApiError);
+  }
+
+  return { data: section };
+};
+
+// * ==================== CRUD Operation of Lecture apis ====================
+export const createLecture = async (sectionId: string, title: string) => {
+  const { data: lecture, error } = await lecturesControllerCreate({
+    path: { sectionId },
+    body: { title },
+  });
+
+  if (error) {
+    throwApiError(error as ApiError);
+  }
+
+  return { data: lecture };
+};
+
+export const updateLecturePreview = async (
+  lectureId: string,
+  isPreview: boolean
+) => {
+  const { data: lecture, error } = await lecturesControllerUpdate({
+    path: { lectureId },
+    body: { isPreview },
+  });
+
+  if (error) {
+    throwApiError(error as ApiError);
+  }
+
+  return { data: lecture };
+};
+
+export const deleteLecture = async (lectureId: string) => {
+  const { data: lecture, error } = await lecturesControllerDelete({
+    path: { lectureId },
+  });
+
+  if (error) {
+    throwApiError(error as ApiError);
+  }
+
+  return { data: lecture };
+};
+
+export const updateLecture = async (
+  lectureId: string,
+  updateLectureDto: UpdateLectureDto
+) => {
+  const { data, error } = await lecturesControllerUpdate({
+    path: { lectureId },
+    body: updateLectureDto,
+  });
+
+  if (error) {
+    throwApiError(error as ApiError);
+  }
+
+  return { data };
+};
+
+export const uploadMedia = async (file: File) => {
+  const { data, error } = await mediaControllerUploadFile({
+    body: {
+      file,
+    },
+  });
+
+  if (error) {
+    throwApiError(error as ApiError);
+  }
+
+  return { data };
+};

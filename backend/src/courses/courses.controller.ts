@@ -12,7 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { CoursesService } from './courses.service';
-import { JWTAccessTokenGuard } from 'src/ auth/guards/jwt-access-token.guard';
+import { JWTAccessTokenGuard } from 'src/auth/guards/jwt-access-token.guard';
 import {
   ApiBearerAuth,
   ApiOkResponse,
