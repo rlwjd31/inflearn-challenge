@@ -51,6 +51,14 @@ export class UserEntity implements NullableToUndefined<User> {
   imageUrl?: string;
 
   @ApiProperty({
+    description: '유저 프로필 이미지 URL',
+    type: String,
+    example: '안녕하세요 자개소개입니다',
+    required: false,
+  })
+  bio?: string;
+
+  @ApiProperty({
     isArray: true,
     // TODO: have to convert Object type to like () => AccountDTO after defined Account
     type: Object,
