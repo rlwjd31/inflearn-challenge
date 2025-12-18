@@ -37,9 +37,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { CategoryEntity } from "@/generated/openapi-client";
+import type { CategoryEntity, UserEntity } from "@/generated/openapi-client";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const categoryIcons: Record<
   string,
@@ -73,8 +78,10 @@ const getCategoryIcon = (name: string) => {
 };
 
 export default function SiteHeader({
+  profile,
   categories,
 }: {
+  profile?: UserEntity;
   categories: CategoryEntity[];
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -178,20 +185,37 @@ export default function SiteHeader({
           </Button>
 
           {/* User Avatar */}
-          <Button variant="ghost" size="icon" aria-label="사용자 메뉴">
-            <Avatar className="size-8">
-              <AvatarImage src="/icons/inflearn.svg" alt="User" />
-              <AvatarFallback className="bg-primary/10">
-                <Image
-                  src="/icons/inflearn.svg"
-                  alt="Inflearn"
-                  width={16}
-                  height={16}
-                  className="size-4"
-                />
-              </AvatarFallback>
-            </Avatar>
-          </Button>
+          <Popover>
+            <PopoverTrigger asChild>
+              <div className="ml-2 cursor-pointer">
+                <Avatar>
+                  {profile?.image ? (
+                    <img
+                      src={profile.image}
+                      alt="avatar"
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  ) : (
+                    <AvatarFallback>
+                      <span role="img" aria-label="user">
+                        👤
+                      </span>
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+              </div>
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-56 p-0">
+              <button
+                className="w-full text-left px-4 py-3 hover:bg-gray-100 focus:outline-none"
+                onClick={() => (window.location.href = "/my/settings/account")}
+              >
+                <div className="font-semibold text-gray-800">
+                  {profile?.name || profile?.email || "내 계정"}
+                </div>
+              </button>
+            </PopoverContent>
+          </Popover>
         </div>
       </nav>
 

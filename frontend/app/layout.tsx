@@ -26,15 +26,17 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { data: categories, error } = await api.getAllCategories();
+  const { data: categories } = await api.getAllCategories();
+  const { data: profile } = await api.getProfile();
   return (
     <html lang="en">
       <body
+        suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <SiteHeader categories={categories ?? []} />
-          {children}
+          <SiteHeader categories={categories ?? []} profile={profile} />
+          <main>{children}</main>
         </Providers>
         <Toaster position="top-right" />
       </body>
