@@ -51,6 +51,7 @@ model User {
   emailVerified  DateTime? @map("email_verified")
   hashedPassword String?   @map("hashed_password")
   imageUrl       String?
+  bio            String?
   accounts       Account[]
   sessions       Session[]
 
