@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { CategoryEntity, UserEntity } from "@/generated/openapi-client";
 import { CATEGORY_ICONS } from "@/widgets/header/constants/category-icons";
+import { AvatarImage } from "@radix-ui/react-avatar";
 
 const hideCategoryRoutes = ["/instructor", "/create_courses"];
 const hideHeaderRoutes = ["/course"];
@@ -136,20 +137,10 @@ export default function SiteHeader({
             <PopoverTrigger asChild>
               <div className="ml-2 cursor-pointer">
                 <Avatar>
-                  {profile?.imageUrl ? (
-                    <Image
-                      src={profile.imageUrl}
-                      alt="avatar"
-                      fill
-                      className="w-full h-full object-cover rounded-full"
-                    />
-                  ) : (
-                    <AvatarFallback>
-                      <span role="img" aria-label="user">
-                        👤
-                      </span>
-                    </AvatarFallback>
-                  )}
+                  <Avatar>
+                    <AvatarImage src={profile?.imageUrl} alt="profile-avatar" />
+                    <AvatarFallback>👤</AvatarFallback>
+                  </Avatar>
                 </Avatar>
               </div>
             </PopoverTrigger>
