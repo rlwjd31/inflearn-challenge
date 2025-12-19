@@ -1,81 +1,28 @@
 "use client";
-// export default function SiteHeader({
-//   categories,
-// }: {
-//   categories: CategoryEntity[];
-// }) {
-//   return (
-//     <header>
-//       {categories.map((v) => (
-//         <li key={v.id}>{v.name}</li>
-//       ))}
-//     </header>
-//   );
-// }
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Search,
-  Menu,
-  X,
-  Grid3x3,
-  Star,
-  Monitor,
-  Gamepad2,
-  Atom,
-  Cpu,
-  Shield,
-  Palette,
-  Briefcase,
-  BookOpen,
-  Compass,
-  GraduationCap,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import type { CategoryEntity, UserEntity } from "@/generated/openapi-client";
-import { useState } from "react";
 import { usePathname } from "next/navigation";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Menu, Search, X } from "lucide-react";
 
-const categoryIcons: Record<
-  string,
-  React.ComponentType<{ className?: string }>
-> = {
-  전체: Grid3x3,
-  "MY 카테고리": Star,
-  "개발·프로그래밍": Monitor,
-  "게임 개발": Gamepad2,
-  "데이터 사이언스": Atom,
-  인공지능: Cpu,
-  "보안·네트워크": Shield,
-  하드웨어: Cpu,
-  "디자인·아트": Palette,
-  "기획·경영·마케팅": Briefcase,
-  "업무 생산성": BookOpen,
-  "커리어·자기계발": Compass,
-  "대학 교육": GraduationCap,
-};
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import type { CategoryEntity, UserEntity } from "@/generated/openapi-client";
+import { CATEGORY_ICONS } from "@/widgets/header/constants/category-icons";
 
 const hideCategoryRoutes = ["/instructor", "/create_courses"];
 const hideHeaderRoutes = ["/course"];
 
-const getCategoryIcon = (name: string) => {
-  for (const [key, Icon] of Object.entries(categoryIcons)) {
-    if (name.includes(key) || key.includes(name)) {
-      return Icon;
-    }
-  }
-  return Grid3x3;
-};
+const getCategoryIcon = (slug: string) =>
+  CATEGORY_ICONS[slug as keyof typeof CATEGORY_ICONS] ?? CATEGORY_ICONS.default;
 
 export default function SiteHeader({
   profile,
@@ -189,10 +136,11 @@ export default function SiteHeader({
             <PopoverTrigger asChild>
               <div className="ml-2 cursor-pointer">
                 <Avatar>
-                  {profile?.image ? (
-                    <img
-                      src={profile.image}
+                  {profile?.imageUrl ? (
+                    <Image
+                      src={profile.imageUrl}
                       alt="avatar"
+                      fill
                       className="w-full h-full object-cover rounded-full"
                     />
                   ) : (
@@ -265,11 +213,11 @@ export default function SiteHeader({
       {/* Categories Bar */}
       {showCategorySection && (
         <nav className="bg-background">
-          <ScrollArea className="w-full" orientation="horizontal">
+          <ScrollArea className="w-full">
             <div className="flex items-center gap-3 py-2 md:px-6">
               {/*  Categories props */}
               {categories.map((category) => {
-                const Icon = getCategoryIcon(category.name);
+                const Icon = getCategoryIcon(category.slug);
 
                 return (
                   <Link
@@ -284,6 +232,7 @@ export default function SiteHeader({
                   </Link>
                 );
               })}
+              <ScrollBar orientation="horizontal" />
             </div>
           </ScrollArea>
         </nav>
