@@ -14,13 +14,8 @@ import { Input } from "@/components/ui/input";
 import ClientSideCustomEditor from "@/components/ClientCustomCKEditor";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { MAX_IMAGE_SIZE, ACCEPTED_IMAGE_TYPES } from "@/config/dropzone-file.config";
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ACCEPTED_IMAGE_TYPES = {
-  "image/jpeg": [".jpg", ".jpeg"],
-  "image/png": [".png"],
-  "image/gif": [".gif"],
-};
 
 export default function AccountUI({ profile }: { profile: UserEntity }) {
   const [imageUrl, setImageUrl] = useState(profile.imageUrl ?? "");
@@ -66,7 +61,7 @@ export default function AccountUI({ profile }: { profile: UserEntity }) {
     onDrop,
     accept: ACCEPTED_IMAGE_TYPES,
     maxFiles: 1,
-    maxSize: MAX_FILE_SIZE,
+    maxSize: MAX_IMAGE_SIZE,
   });
 
   const handleSave = (e: FormEvent) => {
