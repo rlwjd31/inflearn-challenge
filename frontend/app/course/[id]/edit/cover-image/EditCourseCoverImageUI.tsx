@@ -9,6 +9,7 @@ import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Loader2, Image as ImageIcon } from "lucide-react";
+import { VideoStorageInfo } from "@/lib/api.type";
 
 type EditCourseCoverImageUIProps = {
   course: CourseEntity;
@@ -19,14 +20,6 @@ const ACCEPTED_IMAGE_TYPES = {
   "image/jpeg": [".jpg", ".jpeg"],
   "image/png": [".png"],
   "image/gif": [".gif"],
-};
-
-type VideoStorageInfo = Record<string, unknown> & {
-  s3: {
-    cloudFront: {
-      url: string;
-    };
-  };
 };
 
 export default function EditCourseCoverImageUI({
