@@ -5,6 +5,7 @@ import Providers from "@/app/providers";
 import * as api from "@/lib/api";
 import { SiteHeader } from "@/widgets/header";
 import { Toaster } from "@/components/ui/sonner";
+import { UserEntity } from "@/generated/openapi-client";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +28,14 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const { data: categories } = await api.getAllCategories();
-  const { data: profile } = await api.getProfile();
+  let profile: UserEntity | undefined;
+  try {
+    const { data } = await api.getProfile();
+    profile = data;
+  } catch (error) {
+    // pass
+  }
+
   return (
     <html lang="en">
       <body
