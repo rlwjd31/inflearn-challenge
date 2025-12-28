@@ -19,7 +19,7 @@ import type { CategoryEntity, UserEntity } from "@/generated/openapi-client";
 import { CATEGORY_ICONS } from "@/widgets/header/constants/category-icons";
 import { AvatarImage } from "@radix-ui/react-avatar";
 import { Session } from "next-auth";
-import { signOut } from "@/auth";
+import { signOut } from "next-auth/react";
 
 const hideCategoryRoutes = ["/instructor", "/create_courses"];
 const hideHeaderRoutes = ["/course"];
@@ -170,7 +170,6 @@ export default function SiteHeader({
                 <Button
                   variant="ghost"
                   className="w-full justify-start px-4 py-3 hover:bg-gray-100 focus-visible:ring-0 rounded-none"
-                  // @FIXME: `headers` was called outside a request scope 에러 발생
                   onClick={() => signOut()}
                 >
                   <div className="font-semibold text-gray-800 cursor-pointer">
