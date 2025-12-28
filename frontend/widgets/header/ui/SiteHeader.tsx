@@ -102,8 +102,6 @@ export default function SiteHeader({
               커뮤니티
             </Link>
           </div>
-
-          {/* Mobile Menu Button */}
         </div>
 
         {/* Center: Search Bar */}
@@ -133,11 +131,10 @@ export default function SiteHeader({
             size="sm"
             className="hidden sm:flex font-bold"
           >
-            지식 공유자
+            <Link href="/instructor">지식 공유자</Link>
           </Button>
 
           {/* User Avatar */}
-
           {session ? (
             <Popover>
               <PopoverTrigger asChild>
@@ -182,14 +179,12 @@ export default function SiteHeader({
               </PopoverContent>
             </Popover>
           ) : (
-            <Link href="/signin">
-              <Button
-                variant="outline"
-                className="font-semibold border-gray-200 hover:border-[#1dc078] hover:text-[#1dc078] ml-2"
-              >
-                로그인
-              </Button>
-            </Link>
+            <Button
+              variant="outline"
+              className="font-semibold border-gray-200 hover:border-[#1dc078] hover:text-[#1dc078] ml-2"
+            >
+              <Link href="/signin">로그인</Link>
+            </Button>
           )}
         </div>
       </nav>

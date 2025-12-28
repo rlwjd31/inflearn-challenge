@@ -5,7 +5,6 @@ import Providers from "@/app/providers";
 import * as api from "@/lib/api";
 import { SiteHeader } from "@/widgets/header";
 import { Toaster } from "@/components/ui/sonner";
-import { UserEntity } from "@/generated/openapi-client";
 import { auth } from "@/auth";
 
 const geistSans = Geist({
