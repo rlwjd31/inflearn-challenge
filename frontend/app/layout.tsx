@@ -6,6 +6,7 @@ import * as api from "@/lib/api";
 import { SiteHeader } from "@/widgets/header";
 import { Toaster } from "@/components/ui/sonner";
 import { UserEntity } from "@/generated/openapi-client";
+import { auth } from "@/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,14 +28,20 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { data: categories } = await api.getAllCategories();
-  let profile: UserEntity | undefined;
-  try {
-    const { data } = await api.getProfile();
-    profile = data;
-  } catch (error) {
-    // pass
-  }
+  // TODO: profile의 property에 session의 property가 그대로 있기 때문에
+  // TODO: profile만 사용해도 무방할 것 같지만, session은 login check용을 위해 목적을 분리하면 따로 사용할만 한 듯 함.
+  // TODO: 추후 고민해보기
+  const [categories, profile, session] = await Promise.all([
+    api.getAllCategories().then((res) => res.data),
+    api
+      .getProfile()
+      .then((res) => res.data)
+      .catch((error) => {
+        console.error(error);
+        return undefined;
+      }),
+    auth(),
+  ]);
 
   return (
     <html lang="en">
@@ -43,7 +50,11 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <SiteHeader categories={categories ?? []} profile={profile} />
+          <SiteHeader
+            categories={categories ?? []}
+            profile={profile}
+            session={session}
+          />
           <main>{children}</main>
         </Providers>
         <Toaster position="top-right" />
