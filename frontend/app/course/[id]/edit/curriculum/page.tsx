@@ -1,8 +1,14 @@
-import EditCourseCurriculumUI from "@/app/course/[id]/edit/curriculum/EditCourseCurriculumUI";
+import { notFound } from "next/navigation";
+import { Metadata } from "next";
 
+import EditCourseCurriculumUI from "@/app/course/[id]/edit/curriculum/EditCourseCurriculumUI";
 import { CourseEntity } from "@/generated/openapi-client";
 import * as api from "@/lib/api";
-import { notFound } from "next/navigation";
+
+export const metadata: Metadata = {
+  title: "강좌 편집 - 인프런",
+  description: "인프런 강좌 편집 페이지입니다.",
+};
 
 export default async function EditCourseCurriculumPage({
   params,
