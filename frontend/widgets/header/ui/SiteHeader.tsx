@@ -18,6 +18,8 @@ import { Input } from "@/components/ui/input";
 import type { CategoryEntity, UserEntity } from "@/generated/openapi-client";
 import { CATEGORY_ICONS } from "@/widgets/header/constants/category-icons";
 import { AvatarImage } from "@radix-ui/react-avatar";
+import { Session } from "next-auth";
+import { signOut } from "@/auth";
 
 const hideCategoryRoutes = ["/instructor", "/create_courses"];
 const hideHeaderRoutes = ["/course"];
@@ -28,9 +30,11 @@ const getCategoryIcon = (slug: string) =>
 export default function SiteHeader({
   profile,
   categories,
+  session,
 }: {
   profile?: UserEntity;
   categories: CategoryEntity[];
+  session: Session | null;
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -133,28 +137,60 @@ export default function SiteHeader({
           </Button>
 
           {/* User Avatar */}
-          <Popover>
-            <PopoverTrigger asChild>
-              <div className="ml-2 cursor-pointer">
-                <Avatar>
+
+          {session ? (
+            <Popover>
+              <PopoverTrigger asChild>
+                <div className="ml-2 cursor-pointer">
                   <Avatar>
                     <AvatarImage src={profile?.imageUrl} alt="profile-avatar" />
                     <AvatarFallback>👤</AvatarFallback>
                   </Avatar>
-                </Avatar>
-              </div>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-56 p-0">
-              <button
-                className="w-full text-left px-4 py-3 hover:bg-gray-100 focus:outline-none"
-                onClick={() => (window.location.href = "/my/settings/account")}
-              >
-                <div className="font-semibold text-gray-800">
-                  {profile?.name || profile?.email || "내 계정"}
                 </div>
-              </button>
-            </PopoverContent>
-          </Popover>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-56 p-0">
+                <div className="px-4 py-3 border-b border-gray-100">
+                  <div className="font-semibold text-gray-800">
+                    {profile?.name || profile?.email || "내 계정"}
+                  </div>
+                  {profile?.email && (
+                    <div className="text-xs text-gray-500 mt-1">
+                      {profile.email}
+                    </div>
+                  )}
+                </div>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start px-4 py-3 hover:bg-gray-100 focus-visible:ring-0 rounded-none"
+                  onClick={() =>
+                    (window.location.href = "/my/settings/account")
+                  }
+                >
+                  <div className="font-semibold text-gray-800 cursor-pointer">
+                    프로필 수정
+                  </div>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start px-4 py-3 hover:bg-gray-100 focus-visible:ring-0 rounded-none"
+                  onClick={() => signOut()}
+                >
+                  <div className="font-semibold text-gray-800 cursor-pointer">
+                    로그아웃
+                  </div>
+                </Button>
+              </PopoverContent>
+            </Popover>
+          ) : (
+            <Link href="/signin">
+              <Button
+                variant="outline"
+                className="font-semibold border-gray-200 hover:border-[#1dc078] hover:text-[#1dc078] ml-2"
+              >
+                로그인
+              </Button>
+            </Link>
+          )}
         </div>
       </nav>
 
