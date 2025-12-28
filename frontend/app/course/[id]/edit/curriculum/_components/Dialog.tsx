@@ -18,6 +18,10 @@ import { Label } from "@/components/ui/label";
 import { FileVideo } from "lucide-react";
 import ClientSideCustomEditor from "@/components/ClientCustomCKEditor";
 import { Button } from "@/components/ui/button";
+import {
+  MAX_VIDEO_SIZE,
+  ACCEPTED_VIDEO_TYPES,
+} from "@/config/dropzone-file.config";
 
 type EditLectureDialogProps = {
   isOpen: boolean;
@@ -29,14 +33,6 @@ type EditLectureForm = {
   title: string;
   description: string;
   videoStorageInfo?: any;
-};
-
-const MAX_FILE_SIZE = 300 * 1024 * 1024; // 300MB
-const ACCEPTED_VIDEO_TYPES = {
-  "video/mp4": [".mp4"],
-  "video/x-matroska": [".mkv"],
-  "video/x-m4v": [".m4v"],
-  "video/quicktime": [".mov"],
 };
 
 export default function EditLectureDialog({
@@ -77,7 +73,7 @@ export default function EditLectureDialog({
     onDrop,
     accept: ACCEPTED_VIDEO_TYPES,
     maxFiles: 1,
-    maxSize: MAX_FILE_SIZE,
+    maxSize: MAX_VIDEO_SIZE,
   });
 
   const editLectureMutation = useMutation({
@@ -105,7 +101,7 @@ export default function EditLectureDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[700px]">
+      <DialogContent className="sm:max-w-[700px] max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>강의 수정</DialogTitle>
         </DialogHeader>

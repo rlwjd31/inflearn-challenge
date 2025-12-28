@@ -1,81 +1,40 @@
 "use client";
-// export default function SiteHeader({
-//   categories,
-// }: {
-//   categories: CategoryEntity[];
-// }) {
-//   return (
-//     <header>
-//       {categories.map((v) => (
-//         <li key={v.id}>{v.name}</li>
-//       ))}
-//     </header>
-//   );
-// }
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
-  Search,
-  Menu,
-  X,
-  Grid3x3,
-  Star,
-  Monitor,
-  Gamepad2,
-  Atom,
-  Cpu,
-  Shield,
-  Palette,
-  Briefcase,
-  BookOpen,
-  Compass,
-  GraduationCap,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Menu, Search, X } from "lucide-react";
+
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import type { CategoryEntity } from "@/generated/openapi-client";
-import { useState } from "react";
-import { usePathname } from "next/navigation";
-
-const categoryIcons: Record<
-  string,
-  React.ComponentType<{ className?: string }>
-> = {
-  전체: Grid3x3,
-  "MY 카테고리": Star,
-  "개발·프로그래밍": Monitor,
-  "게임 개발": Gamepad2,
-  "데이터 사이언스": Atom,
-  인공지능: Cpu,
-  "보안·네트워크": Shield,
-  하드웨어: Cpu,
-  "디자인·아트": Palette,
-  "기획·경영·마케팅": Briefcase,
-  "업무 생산성": BookOpen,
-  "커리어·자기계발": Compass,
-  "대학 교육": GraduationCap,
-};
+import type { CategoryEntity, UserEntity } from "@/generated/openapi-client";
+import { CATEGORY_ICONS } from "@/widgets/header/constants/category-icons";
+import { AvatarImage } from "@radix-ui/react-avatar";
+import { Session } from "next-auth";
+import { signOut } from "next-auth/react";
 
 const hideCategoryRoutes = ["/instructor", "/create_courses"];
 const hideHeaderRoutes = ["/course"];
 
-const getCategoryIcon = (name: string) => {
-  for (const [key, Icon] of Object.entries(categoryIcons)) {
-    if (name.includes(key) || key.includes(name)) {
-      return Icon;
-    }
-  }
-  return Grid3x3;
-};
+const getCategoryIcon = (slug: string) =>
+  CATEGORY_ICONS[slug as keyof typeof CATEGORY_ICONS] ?? CATEGORY_ICONS.default;
 
 export default function SiteHeader({
+  profile,
   categories,
+  session,
 }: {
+  profile?: UserEntity;
   categories: CategoryEntity[];
+  session: Session | null;
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -143,8 +102,6 @@ export default function SiteHeader({
               커뮤니티
             </Link>
           </div>
-
-          {/* Mobile Menu Button */}
         </div>
 
         {/* Center: Search Bar */}
@@ -174,24 +131,61 @@ export default function SiteHeader({
             size="sm"
             className="hidden sm:flex font-bold"
           >
-            지식 공유자
+            <Link href="/instructor">지식 공유자</Link>
           </Button>
 
           {/* User Avatar */}
-          <Button variant="ghost" size="icon" aria-label="사용자 메뉴">
-            <Avatar className="size-8">
-              <AvatarImage src="/icons/inflearn.svg" alt="User" />
-              <AvatarFallback className="bg-primary/10">
-                <Image
-                  src="/icons/inflearn.svg"
-                  alt="Inflearn"
-                  width={16}
-                  height={16}
-                  className="size-4"
-                />
-              </AvatarFallback>
-            </Avatar>
-          </Button>
+          {session ? (
+            <Popover>
+              <PopoverTrigger asChild>
+                <div className="ml-2 cursor-pointer">
+                  <Avatar>
+                    <AvatarImage src={profile?.imageUrl} alt="profile-avatar" />
+                    <AvatarFallback>👤</AvatarFallback>
+                  </Avatar>
+                </div>
+              </PopoverTrigger>
+              <PopoverContent align="end" className="w-56 p-0">
+                <div className="px-4 py-3 border-b border-gray-100">
+                  <div className="font-semibold text-gray-800">
+                    {profile?.name || profile?.email || "내 계정"}
+                  </div>
+                  {profile?.email && (
+                    <div className="text-xs text-gray-500 mt-1">
+                      {profile.email}
+                    </div>
+                  )}
+                </div>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start px-4 py-3 hover:bg-gray-100 focus-visible:ring-0 rounded-none"
+                  onClick={() =>
+                    (window.location.href = "/my/settings/account")
+                  }
+                >
+                  <div className="font-semibold text-gray-800 cursor-pointer">
+                    프로필 수정
+                  </div>
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start px-4 py-3 hover:bg-gray-100 focus-visible:ring-0 rounded-none"
+                  onClick={() => signOut()}
+                >
+                  <div className="font-semibold text-gray-800 cursor-pointer">
+                    로그아웃
+                  </div>
+                </Button>
+              </PopoverContent>
+            </Popover>
+          ) : (
+            <Button
+              variant="outline"
+              className="font-semibold border-gray-200 hover:border-[#1dc078] hover:text-[#1dc078] ml-2"
+            >
+              <Link href="/signin">로그인</Link>
+            </Button>
+          )}
         </div>
       </nav>
 
@@ -241,11 +235,11 @@ export default function SiteHeader({
       {/* Categories Bar */}
       {showCategorySection && (
         <nav className="bg-background">
-          <ScrollArea className="w-full" orientation="horizontal">
+          <ScrollArea className="w-full">
             <div className="flex items-center gap-3 py-2 md:px-6">
               {/*  Categories props */}
               {categories.map((category) => {
-                const Icon = getCategoryIcon(category.name);
+                const Icon = getCategoryIcon(category.slug);
 
                 return (
                   <Link
@@ -260,6 +254,7 @@ export default function SiteHeader({
                   </Link>
                 );
               })}
+              <ScrollBar orientation="horizontal" />
             </div>
           </ScrollArea>
         </nav>
