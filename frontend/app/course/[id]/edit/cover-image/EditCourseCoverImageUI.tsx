@@ -9,24 +9,11 @@ import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Loader2, Image as ImageIcon } from "lucide-react";
+import { VideoStorageInfo } from "@/lib/api.type";
+import { MAX_IMAGE_SIZE, ACCEPTED_IMAGE_TYPES } from "@/config/dropzone-file.config";
 
 type EditCourseCoverImageUIProps = {
   course: CourseEntity;
-};
-
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ACCEPTED_IMAGE_TYPES = {
-  "image/jpeg": [".jpg", ".jpeg"],
-  "image/png": [".png"],
-  "image/gif": [".gif"],
-};
-
-type VideoStorageInfo = Record<string, unknown> & {
-  s3: {
-    cloudFront: {
-      url: string;
-    };
-  };
 };
 
 export default function EditCourseCoverImageUI({
@@ -74,7 +61,7 @@ export default function EditCourseCoverImageUI({
     onDrop,
     accept: ACCEPTED_IMAGE_TYPES,
     maxFiles: 1,
-    maxSize: MAX_FILE_SIZE,
+    maxSize: MAX_IMAGE_SIZE,
   });
   
   // https://d255jagofabe5c.cloudfront.net/cover-image-test.jpeg

@@ -15,6 +15,9 @@ import {
   sectionsControllerUpdate,
   UpdateCourseDto,
   UpdateLectureDto,
+  UpdateUserDto,
+  usersControllerGetProfile,
+  usersControllerUpdateProfile,
 } from "@/generated/openapi-client";
 
 type ApiError = {
@@ -187,6 +190,28 @@ export const uploadMedia = async (file: File) => {
     body: {
       file,
     },
+  });
+
+  if (error) {
+    throwApiError(error as ApiError);
+  }
+
+  return { data };
+};
+
+export const getProfile = async () => {
+  const { data, error } = await usersControllerGetProfile();
+
+  if (error) {
+    throwApiError(error as ApiError);
+  }
+
+  return { data };
+};
+
+export const updateProfile = async (updateUserDto: UpdateUserDto) => {
+  const { data, error } = await usersControllerUpdateProfile({
+    body: updateUserDto,
   });
 
   if (error) {
