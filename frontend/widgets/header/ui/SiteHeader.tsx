@@ -170,6 +170,7 @@ export default function SiteHeader({
                 <Button
                   variant="ghost"
                   className="w-full justify-start px-4 py-3 hover:bg-gray-100 focus-visible:ring-0 rounded-none"
+                  // @FIXME: `headers` was called outside a request scope 에러 발생
                   onClick={() => signOut()}
                 >
                   <div className="font-semibold text-gray-800 cursor-pointer">
